@@ -1,0 +1,1 @@
+Unity SocketIO: https://github.com/itisnajim/SocketIOUnity.git  #package manager -> + add package from git
