@@ -1,7 +1,8 @@
+#if UNITY_EDITOR
 using UnityEditor;
 using UnityEngine;
 
-// if you want to delete this file delete all Gentleland "Utils" folder 
+// if you want to delete this file delete all Gentleland "Utils" folder
 // you can then delete GentlelandSettings folder too
 namespace Gentleland.Utils.SteampunkUI
 {
@@ -16,7 +17,7 @@ namespace Gentleland.Utils.SteampunkUI
         public static void OpenWindow()
         {
             PackageSettings settings = AssetDatabase.LoadAssetAtPath<PackageSettings>(PackageSettings.PackageSettingsPath);
-            
+
             if (settings == null)
             {
                 settings = ScriptableObject.CreateInstance<PackageSettings>();
@@ -39,7 +40,7 @@ namespace Gentleland.Utils.SteampunkUI
         {
             if (!initialized)
             {
-                string[] s = AssetDatabase.FindAssets(PackageSettings.imageName + " t:Texture"); 
+                string[] s = AssetDatabase.FindAssets(PackageSettings.imageName + " t:Texture");
                 if (s.Length > 0)
                 {
                     image = AssetDatabase.LoadAssetAtPath<Texture>(AssetDatabase.GUIDToAssetPath(s[0]));
@@ -61,7 +62,7 @@ namespace Gentleland.Utils.SteampunkUI
             }
             GUILayout.BeginArea(new Rect(20, imageHeight + 2 * margin, position.width - margin * 2, position.height - imageHeight + 2 * margin));
             GUILayout.Label(
-@"Hello dear developer! 
+@"Hello dear developer!
 
 Thank you for acquiring this asset pack from the Unity Asset Store!
 
@@ -96,3 +97,4 @@ CEO - Gentleland"
 
     }
 }
+#endif
