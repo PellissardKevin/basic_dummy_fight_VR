@@ -84,12 +84,8 @@ public class SocketClient : MonoBehaviour
         state = parse_response(data, "state");
         Debug.Log($"New state: {state}");
         functionQueue.Enqueue(() => statusText.text = "State: " + state );
-        Debug.Log("before status text");
-        Debug.Log("before parse");
 
         functionQueue.Enqueue(() => UpdateUI(state) );
-
-        Debug.Log("after parse");
     }
 
     private void prompt_match(SocketIOClient.SocketIOResponse data)
@@ -143,15 +139,12 @@ public class SocketClient : MonoBehaviour
             socket.EmitAsync("start_queue");
         }
     }
+
     private string parse_response(SocketIOClient.SocketIOResponse data, string key)
     {
-        var jsonObject = data.GetValue<Dictionary<string, string>>();
-        if (!jsonObject.ContainsKey(key))
-        {
-            Debug.LogError($"Key {key} not found in the JSON object.");
-            return null;
-        }
-        return jsonObject[key];
+        var jsonObject = data.GetValue<Dictionary<string, object>>();
+        var message = jsonObject[key];
+        return message?.ToString();
     }
 
     public void RespondToMatch(bool response)
