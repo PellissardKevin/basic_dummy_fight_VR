@@ -4,7 +4,10 @@
 EditorBuildSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 2
-  m_Scenes: []
+  m_Scenes:
+  - enabled: 1
+    path: Assets/Scenes/Networking.unity
+    guid: 6dafc51b4750e164f8f83bbf56f6317a
   m_configObjects:
     Unity.XR.Oculus.Settings: {fileID: 11400000, guid: 74243a16e45f8f443b1cdda1a25addee, type: 2}
     Unity.XR.PICO.LivePreview.Settings: {fileID: 11400000, guid: 60dd5044a68e9f14ba24672a5ca46f68, type: 2}
