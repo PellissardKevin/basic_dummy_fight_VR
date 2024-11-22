@@ -11,19 +11,15 @@ using Debug = UnityEngine.Debug;
 public class SocketClient : MonoBehaviour
 {
     private SocketIOUnity socket;
-    private string serverUrl = "https://lemming-national-anemone.ngrok-free.app/";
-    public bool connected = false;
-    public string state = "disconnected";
-
-    public Text statusText; // UI element to display state
-    public Text messageText; // UI element to display messages
-    public GameObject startQueueButton; // Button for starting queue
-    public GameObject yesButton; // Button for "Yes" response
-    public GameObject noButton; // Button for "No" response
-    public GameObject endButton; // Button for ending match
+    public ChangeScene SceneChanger;
 
     //queue used to do unity stuff in the main thread
     ConcurrentQueue<Action> functionQueue = new ConcurrentQueue<Action>();
+
+    private string serverUrl = "https://lemming-national-anemone.ngrok-free.app/";
+    public bool connected = false;
+    public string state = "disconnected";
+    private AccessToSocketScript UiScript;
 
     //types:
     //sender:   SocketIOUnity
@@ -32,7 +28,6 @@ public class SocketClient : MonoBehaviour
 
     void Start()
     {
-        UpdateUI(state);
         socket = new SocketIOUnity(serverUrl, new SocketIOOptions
         {
             Transport = SocketIOClient.Transport.TransportProtocol.WebSocket
@@ -83,54 +78,27 @@ public class SocketClient : MonoBehaviour
     {
         state = parse_response(data, "state");
         Debug.Log($"New state: {state}");
-        functionQueue.Enqueue(() => statusText.text = "State: " + state );
-
-        functionQueue.Enqueue(() => UpdateUI(state) );
+        functionQueue.Enqueue(() =>
+        {
+            if (state == "in_match")
+                SceneChanger.SwitchToGame();
+            UiScript.UpdateState(state);
+        });
     }
 
     private void prompt_match(SocketIOClient.SocketIOResponse data)
     {
-        Debug.Log("Prompt received: " + data);
         string message = parse_response(data, "message");
 
-        functionQueue.Enqueue(() =>
-        {
-            messageText.text = message;
-            messageText.gameObject.SetActive(true);
-            yesButton.SetActive(true);
-            noButton.SetActive(true);
-        });
+        functionQueue.Enqueue(() => { UiScript.prompt_match(message); });
     }
 
     private void server_recieved_match_response()
     {
-        Debug.Log("Server acknowledged match response");
-
-        functionQueue.Enqueue(() =>
-        {
-            yesButton.SetActive(false);
-            noButton.SetActive(false);
-        });
+        functionQueue.Enqueue(() => { UiScript.server_recieved_match_response(); });
     }
 
-    private void UpdateUI(string state)
-    {
-        // Reset all UI elements
-        messageText.gameObject.SetActive(false);
-        startQueueButton.SetActive(false);
-        yesButton.SetActive(false);
-        noButton.SetActive(false);
-        endButton.SetActive(false);
 
-        // Show relevant UI elements based on state
-        if (state == "connected")
-        {
-            Debug.Log("activating button start");
-            startQueueButton.SetActive(true);
-        }
-        if (state == "in_match")
-            endButton.SetActive(true);
-    }
     public void StartQueue()
     {
         if (connected)
@@ -150,10 +118,7 @@ public class SocketClient : MonoBehaviour
     public void RespondToMatch(bool response)
     {
         if (connected)
-        {
-            Debug.Log("Responding to match: " + response);
             socket.EmitAsync("match_response", new { response = response });
-        }
     }
 
 
@@ -161,7 +126,6 @@ public class SocketClient : MonoBehaviour
     {
         if (connected)
         {
-            Debug.Log("Ending match...");
             socket.EmitAsync("end_match");
         }
     }
@@ -183,4 +147,19 @@ public class SocketClient : MonoBehaviour
             Debug.LogError($"Error Catcher: in {action.Method.Name} - {ex.Message}\n{ex.StackTrace}");
         }
     }
+
+    public void SelfRegister(AccessToSocketScript scpt)
+    {
+        if (scpt != null)
+        {
+            UiScript = scpt;
+            CallUpdateUI(state);
+        }
+    }
+
+    private void CallUpdateUI(string state)
+    {
+        UiScript.UpdateUI(state);
+    }
+
 }
