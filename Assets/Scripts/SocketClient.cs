@@ -16,7 +16,7 @@ public class SocketClient : MonoBehaviour
     //queue used to do unity stuff in the main thread
     ConcurrentQueue<Action> functionQueue = new ConcurrentQueue<Action>();
 
-    private string serverUrl = "https://lemming-national-anemone.ngrok-free.app/";
+    public string serverUrl = "https://lemming-national-anemone.ngrok-free.app/";
     public bool connected = false;
     public string state = "disconnected";
     private AccessToSocketScript UiScript;

@@ -11,6 +11,9 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/MenuRoomVR_Kevin.unity
     guid: 10a8b878630639e4c88825d474c57820
+  - enabled: 1
+    path: Assets/Scenes/Arena.unity
+    guid: 9fc0d4010bbf28b4594072e72b8655ab
   m_configObjects:
     Unity.XR.Oculus.Settings: {fileID: 11400000, guid: 74243a16e45f8f443b1cdda1a25addee, type: 2}
     Unity.XR.PICO.LivePreview.Settings: {fileID: 11400000, guid: 60dd5044a68e9f14ba24672a5ca46f68, type: 2}
