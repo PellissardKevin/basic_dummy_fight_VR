@@ -40,10 +40,8 @@ public class SocketClient : MonoBehaviour
         socket.On("status", (data) => { ErrorCatcher(() => socket_status_update(data)); });
         socket.On("prompt_match", (data) => { ErrorCatcher(() => prompt_match(data)); });
         socket.On("server_recieved_match_response", (data) => { ErrorCatcher(() => server_recieved_match_response()); });
-        socket.On("response", (data) =>
-        {
-            Debug.Log("Received response from server: " + data);
-        });
+        socket.On("response", (data) => { Debug.Log("Received response from server: " + data); });
+        socket.On("game_login_response", (data) => { ErrorCatcher(() => game_login_response(data)); });
 
         socket.ConnectAsync();
         Debug.Log("Starting...");
@@ -121,13 +119,17 @@ public class SocketClient : MonoBehaviour
             socket.EmitAsync("match_response", new { response = response });
     }
 
+    public void LogIn(string username, string password)
+    {
+        if (connected)
+            socket.EmitAsync("game_login", new { username = username, password = password });
+    }
+
 
     public void EndMatch()
     {
         if (connected)
-        {
             socket.EmitAsync("end_match");
-        }
     }
 
     private void OnDestroy()
@@ -160,6 +162,21 @@ public class SocketClient : MonoBehaviour
     private void CallUpdateUI(string state)
     {
         UiScript.UpdateUI(state);
+    }
+
+    private void game_login_response(SocketIOClient.SocketIOResponse data)
+    {
+        string user_id = parse_response(data, "user_id");
+        if (user_id == null)
+        {
+            Debug.Log($"user_id: null");
+            functionQueue.Enqueue(() => { UiScript.Wrong_Login(); });
+        }
+        else
+        {
+            Debug.Log($"user_id: {user_id}");
+            functionQueue.Enqueue(() => { UiScript.Good_Login(); });
+        }
     }
 
 }

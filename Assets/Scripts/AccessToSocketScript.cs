@@ -3,10 +3,12 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
+using TMPro;
 
 public class AccessToSocketScript : MonoBehaviour
 {
     private SocketClient SocketScript;
+    public PlayerManagerScript playerManagerScript;
 
     public Text statusText; // UI element to display state
     public Text messageText; // UI element to display messages
@@ -14,12 +16,22 @@ public class AccessToSocketScript : MonoBehaviour
     public Button yesButton; // Button for "Yes" response
     public Button noButton; // Button for "No" response
     public Button endButton; // Button for ending match
+    public Text connexion;
+    [SerializeField] private TMP_InputField NameField;
+    [SerializeField] private TMP_InputField PasswordField;
 
     void Start()
     {
         Debug.Log(IsSceneLoaded("Networking"));
         SocketScript = FindObjectOfType<SocketClient>();
         SocketScript.SelfRegister(this);
+    }
+    void Update()
+    {
+        if (SocketScript.connected && connexion.gameObject.activeSelf)
+            connexion.gameObject.SetActive(false);
+        if (!SocketScript.connected && !connexion.gameObject.activeSelf)
+            connexion.gameObject.SetActive(true);
     }
 
     public void CallStartQueue()
@@ -43,11 +55,8 @@ public class AccessToSocketScript : MonoBehaviour
         endButton.gameObject.SetActive(false);
 
         // Show relevant UI elements based on state
-        if (state == "connected")
-        {
-            Debug.Log("activating button start");
+        if (state == "verified")
             startQueueButton.gameObject.SetActive(true);
-        }
         if (state == "in_match")
             endButton.gameObject.SetActive(true);
     }
@@ -69,6 +78,13 @@ public class AccessToSocketScript : MonoBehaviour
         SocketScript.RespondToMatch(response);
     }
 
+    public void Login()
+    {
+        string username = NameField.text;
+        string password = PasswordField.text;
+        SocketScript.LogIn(username, password);
+    }
+
     private bool IsSceneLoaded(string sceneName)
     {
         for (int i = 0; i < SceneManager.sceneCount; i++)
@@ -85,4 +101,14 @@ public class AccessToSocketScript : MonoBehaviour
     {
         SocketScript.EndMatch();
     }
+    public void Wrong_Login()
+    {
+        Debug.Log("Wrong login");
+    }
+    public void Good_Login()
+    {
+        playerManagerScript.SendToMenu();
+        Debug.Log("Good login");
+    }
+
 }
