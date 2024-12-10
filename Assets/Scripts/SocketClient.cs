@@ -20,6 +20,7 @@ public class SocketClient : MonoBehaviour
     public bool connected = false;
     public string state = "disconnected";
     private AccessToSocketScript UiScript;
+    private GameSocketScript GameScript;
 
     //types:
     //sender:   SocketIOUnity
@@ -42,6 +43,7 @@ public class SocketClient : MonoBehaviour
         socket.On("server_recieved_match_response", (data) => { ErrorCatcher(() => server_recieved_match_response()); });
         socket.On("response", (data) => { Debug.Log("Received response from server: " + data); });
         socket.On("game_login_response", (data) => { ErrorCatcher(() => game_login_response(data)); });
+        socket.On("pick_cards", (data) => { ErrorCatcher(() => { HandlePickCards(data); }); });
 
         socket.ConnectAsync();
         Debug.Log("Starting...");
@@ -80,7 +82,8 @@ public class SocketClient : MonoBehaviour
         {
             if (state == "in_match")
                 SceneChanger.SwitchToGame();
-            UiScript.UpdateState(state);
+            else
+                UiScript.UpdateState(state);
         });
     }
 
@@ -158,6 +161,13 @@ public class SocketClient : MonoBehaviour
             CallUpdateUI(state);
         }
     }
+    public void SelfRegisterGameScript(GameSocketScript scpt)
+    {
+        if (scpt != null)
+        {
+            GameScript = scpt;
+        }
+    }
 
     private void CallUpdateUI(string state)
     {
@@ -179,4 +189,16 @@ public class SocketClient : MonoBehaviour
         }
     }
 
+    public void Scene_is_ready()
+    {
+        if (connected)
+            socket.EmitAsync("ready_to_start");
+    }
+
+    private void HandlePickCards(SocketIOClient.SocketIOResponse data)
+    {
+        string repr_of_cards = parse_response(data, "cards");
+        functionQueue.Enqueue(() => { GameScript.Show(repr_of_cards); });
+        Debug.Log(repr_of_cards);
+    }
 }

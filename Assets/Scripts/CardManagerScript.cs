@@ -12,7 +12,10 @@ public class CardManagerScript : MonoBehaviour
     public string card_id;
 
     private string baseUrl;
-    private string saveFolderPath = "Card_Data";
+    private string saveFolderPath = "Assets/StreamingAssets/Card_Data";
+    private string JsonPath = "Assets/StreamingAssets/Card_Data/id_to_name.json";
+
+    private Dictionary<string, string> idToNameMapping = new Dictionary<string, string>();
 
     void Start()
     {
@@ -41,14 +44,17 @@ public class CardManagerScript : MonoBehaviour
         string jsonResponse = request.downloadHandler.text; //parse the JSON response
         var jsonArray = JsonConvert.DeserializeObject<string[][]>(jsonResponse);
 
+        idToNameMapping.Clear();
+
         foreach (var item in jsonArray)
         {
-            string id = item[0];      // Column 0: ID
+            string id = item[0];
             string name = item[1];
-            string imageUrl = baseUrl + "static/" + item[2]; // Column 1: Image URL
+            string imageUrl = baseUrl + "static/" + item[2];
 
-            StartCoroutine(Fetch_Image_and_Store(id, name, imageUrl)); // Fetch the image from the URL
+            yield return StartCoroutine(Fetch_Image_and_Store(id, name, imageUrl)); // Fetch the image from the URL
         }
+        SaveNameMappingToJson();
     }
 
     IEnumerator Fetch_Image_and_Store(string id, string name, string imageUrl)
@@ -62,18 +68,15 @@ public class CardManagerScript : MonoBehaviour
             Debug.LogError("Error fetching image: " + imageRequest.error + " " + imageUrl);
             yield break; // Stop the coroutine if there is an error
         }
-
         Texture2D texture = DownloadHandlerTexture.GetContent(imageRequest); // Get the texture from the response
 
         string formattedId = int.Parse(id).ToString("D3");
-        string fileName = $"{formattedId}_{name}.png";
+        string fileName = $"{formattedId}.png";
         string filePath = Path.Combine(saveFolderPath, fileName);
 
-        // Encode the texture to PNG
         byte[] imageBytes = texture.EncodeToPNG();
-
-        // Save the PNG to the specified path
-        File.WriteAllBytes(filePath, imageBytes);
+        File.WriteAllBytes(filePath, imageBytes); // Save the PNG to the specified path
+        idToNameMapping[formattedId] = name;
     }
 
 
@@ -186,5 +189,37 @@ public class CardManagerScript : MonoBehaviour
             // Instantiate the prefab with the image
             Create_Card_From_ID(id);
         }
+    }
+
+    private void SaveNameMappingToJson()
+    {
+        LoadNameMappingFromJson();
+
+        // Add new key-value pairs to the dictionary
+        foreach (var entry in idToNameMapping)
+        {
+            if (!idToNameMapping.ContainsKey(entry.Key))
+                idToNameMapping[entry.Key] = entry.Value;
+        }
+
+        // Convert the dictionary to JSON
+        string json = JsonConvert.SerializeObject(idToNameMapping, Formatting.Indented);
+
+        Debug.Log(JsonPath);
+        // Write the updated JSON to the file
+        File.WriteAllText(JsonPath, json);
+        Debug.Log($"Name mapping saved to {JsonPath}");
+    }
+
+    public void LoadNameMappingFromJson()
+    {
+        if (File.Exists(JsonPath))
+        {
+            string json = File.ReadAllText(JsonPath);
+            idToNameMapping = JsonConvert.DeserializeObject<Dictionary<string, string>>(json);
+            Debug.Log("Name mapping loaded from JSON");
+        }
+        else
+            Debug.Log("No existing JSON found, starting fresh.");
     }
 }
