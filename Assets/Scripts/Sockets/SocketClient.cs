@@ -44,9 +44,12 @@ public class SocketClient : MonoBehaviour
         socket.On("response", (data) => { Debug.Log("Received response from server: " + data); });
         socket.On("game_login_response", (data) => { ErrorCatcher(() => game_login_response(data)); });
         socket.On("pick_cards", (data) => { ErrorCatcher(() => { HandlePickCards(data); }); });
+        socket.On("next_phase", (data) => { ErrorCatcher(() => { next_phase(data); }); });
+        socket.On("phase_validation_accepted", (data) => { ErrorCatcher(() => { phase_validation_accepted(data); }); });
+        socket.On("phase_validation_denied", (data) => { ErrorCatcher(() => { phase_validation_denied(data); }); });
+        socket.On("player_move", (data) => { ErrorCatcher(() => { set_player_position(data); }); });
 
         socket.ConnectAsync();
-        Debug.Log("Starting...");
     }
 
     private void Update()
@@ -66,6 +69,7 @@ public class SocketClient : MonoBehaviour
     private void disconnect()
     {
         connected = false;
+        functionQueue.Enqueue(() => { SceneChanger.BackToMenu(); });
         Debug.Log("Disconnected from server");
     }
 
@@ -76,6 +80,9 @@ public class SocketClient : MonoBehaviour
 
     private void socket_status_update(SocketIOClient.SocketIOResponse data)
     {
+        if (state == "in_match")
+            functionQueue.Enqueue(() => { SceneChanger.BackToMenu(); });
+
         state = parse_response(data, "state");
         Debug.Log($"New state: {state}");
         functionQueue.Enqueue(() =>
@@ -200,5 +207,43 @@ public class SocketClient : MonoBehaviour
         string repr_of_cards = parse_response(data, "cards");
         functionQueue.Enqueue(() => { GameScript.Show(repr_of_cards); });
         Debug.Log(repr_of_cards);
+    }
+
+    public void Validate_Cards(List<string> card_Ids)
+    {
+        if (connected)
+            socket.EmitAsync("phase_validation", new { cards = card_Ids });
+    }
+
+    private void next_phase(SocketIOClient.SocketIOResponse data)
+    {
+        string my_cards = parse_response(data, "your_cards");
+        string oponent_cards = parse_response(data, "oponent_cards");
+        string phase = parse_response(data, "phase");
+        string timer = parse_response(data, "timer");
+
+        functionQueue.Enqueue(() => { GameScript.next_phase(my_cards, oponent_cards, phase, timer); });
+    }
+
+    private void phase_validation_accepted(SocketIOClient.SocketIOResponse data)
+    {
+        functionQueue.Enqueue(() => { GameScript.phase_validation_accepted(); });
+    }
+
+    private void phase_validation_denied(SocketIOClient.SocketIOResponse data)
+    {
+        functionQueue.Enqueue(() => { GameScript.phase_validation_denied(); });
+    }
+
+    private void set_player_position(SocketIOClient.SocketIOResponse data)
+    {
+        string position = parse_response(data, "position");
+        functionQueue.Enqueue(() => { GameScript.set_player_position(position); });
+    }
+
+    public void send_player_position(string position)
+    {
+        if (connected)
+            socket.EmitAsync("player_move", new { position = position });
     }
 }

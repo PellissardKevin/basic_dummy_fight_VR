@@ -18,6 +18,7 @@ public class Deck3DManagerScript : MonoBehaviour
 
     public Transform deck_spawn_point;
     public Transform hand_spawn_point;
+    public Transform board_spawn_point;
 
 
     private string saveFolderPath = "Assets/StreamingAssets/Card_Data";
@@ -26,7 +27,6 @@ public class Deck3DManagerScript : MonoBehaviour
     private Dictionary<string, string> idToNameMapping = new Dictionary<string, string>();
 
     public Text debugobj;
-    public Text debugobj2;
 
     void Start()
     {
@@ -45,7 +45,11 @@ public class Deck3DManagerScript : MonoBehaviour
         Vector3 previous = new Vector3(0, 0, 0);
         Delete_Deck(deck_cards);
         for (int i = 0; i < quantity; i++, previous += thickness)
-            deck_cards.Add(Instantiate(card_prefab, deck_spawn_point.position + previous, deck_spawn_point.rotation));
+        {
+            GameObject card = Instantiate(card_prefab, deck_spawn_point.position + previous, deck_spawn_point.rotation);
+            card.transform.SetParent(this.gameObject.transform);
+            deck_cards.Add(card);
+        }
     }
     public void Delete_Deck(List<GameObject> list_of_cards)
     {
@@ -75,6 +79,18 @@ public class Deck3DManagerScript : MonoBehaviour
         {
             debugobj.text = $"Error: {ex.Message}";
         }
+    }
+
+    [ContextMenu("Move Card To Board")]
+    public void MoveCardToBoard()
+    {
+        string id = "003";
+        GameObject picked_Card = hand_cards.Find(card => card.name.StartsWith(id + "_"));
+        hand_cards.Remove(picked_Card);
+        board_cards.Add(picked_Card);
+        picked_Card.transform.position = board_spawn_point.transform.position;
+        picked_Card.transform.rotation = board_spawn_point.transform.rotation;
+        AddaptAllCardsPositions();
     }
 
     public void AddaptAllCardsPositions()
@@ -122,7 +138,6 @@ public class Deck3DManagerScript : MonoBehaviour
         // Format the ID with leading zeros
         string formattedId = int.Parse(id).ToString("D3");
         string folderPath = Path.Combine(Application.streamingAssetsPath, "Card_Data");
-        debugobj2.text = $"path: {folderPath}";
         string[] files = Directory.GetFiles(folderPath, $"{formattedId}.png");
 
         if (files.Length == 0)
@@ -132,7 +147,7 @@ public class Deck3DManagerScript : MonoBehaviour
         }
 
         string filePath = files[0]; // Assume the first match is the desired file
-        string card_name = $"{id}_{idToNameMapping[formattedId]}";
+        string card_name = $"{formattedId}_{idToNameMapping[formattedId]}";
 
         // Load the image as a Texture2D
         byte[] imageBytes = File.ReadAllBytes(filePath);

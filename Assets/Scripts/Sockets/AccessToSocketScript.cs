@@ -22,7 +22,7 @@ public class AccessToSocketScript : MonoBehaviour
 
     void Start()
     {
-        Debug.Log(IsSceneLoaded("Networking"));
+        //Debug.Log(IsSceneLoaded("Networking"));
         SocketScript = FindObjectOfType<SocketClient>();
         SocketScript.SelfRegister(this);
     }
