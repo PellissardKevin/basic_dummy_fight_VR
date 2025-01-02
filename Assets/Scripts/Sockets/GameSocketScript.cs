@@ -12,7 +12,6 @@ public class GameSocketScript : MonoBehaviour
 
     public Text debugobj2;
     public GameObject opponent_player;
-    public GameObject opponent_player2;
     public string current_phase = "Draw";
 
     void Start()
@@ -93,13 +92,9 @@ public class GameSocketScript : MonoBehaviour
         float rz = float.Parse(rotationParts[2]);
         float rw = float.Parse(rotationParts[3]);
 
-        Debug.Log($"Recieving: {x} {y} {z} {rx} {ry} {rz} {rw}");
         // Set the opponent_player's position
         opponent_player.transform.position = new Vector3(-x, y, -z);
         opponent_player.transform.rotation = new Quaternion(rx, ry, rz, rw);
-
-        //opponent_player2.transform.position = new Vector3(-x + 1, y, -z);
-        //opponent_player2.transform.rotation = new Quaternion(rx, -ry, -rz, rw);
 
     }
 

@@ -7,7 +7,7 @@ using TMPro;
 
 public class AccessToSocketScript : MonoBehaviour
 {
-    private SocketClient SocketScript;
+    public SocketClient SocketScript;
     public PlayerManagerScript playerManagerScript;
 
     public Text statusText; // UI element to display state

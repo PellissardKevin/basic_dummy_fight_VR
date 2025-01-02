@@ -41,7 +41,6 @@ public class Position_Sender : MonoBehaviour
 
     private string SerializePosition(Vector3 position, Quaternion rotation)
     {
-        Debug.Log($"Sending {position.x}_{position.y}_{position.z}:{rotation.x}_{rotation.y}_{rotation.z}_{rotation.w}");
         return $"{position.x}_{position.y}_{position.z}:{rotation.x}_{rotation.y}_{rotation.z}_{rotation.w}";
     }
 }
