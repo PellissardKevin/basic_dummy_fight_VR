@@ -6,7 +6,7 @@ public class PlayerMovement : MonoBehaviour
 {
 
     public float speed = 5.0f;
-    public float rotationSpeed = 100.0f;
+    private float rotationSpeed = 5f;
     private Rigidbody rb;
     private Animator animator;
     private bool isGrounded;
@@ -23,6 +23,7 @@ public class PlayerMovement : MonoBehaviour
         // Get input for movement
         float moveX = Input.GetAxis("Horizontal");
         float moveZ = Input.GetAxis("Vertical");
+        float rotationY = Input.GetAxis("Mouse X");
 
         Vector3 cameraForward = Camera.main.transform.forward;
         Vector3 cameraRight = Camera.main.transform.right;
@@ -42,6 +43,11 @@ public class PlayerMovement : MonoBehaviour
             //Quaternion targetRotation = Quaternion.LookRotation(move);
             //rb.rotation = Quaternion.Lerp(rb.rotation, targetRotation, Time.deltaTime * rotationSpeed);  // rotationSpeed controls the rotation speed
         }
+
+        // Rotate the character based on mouse input
+        Quaternion characterRotation = Quaternion.Euler(0, rotationY * rotationSpeed, 0);
+        rb.MoveRotation(rb.rotation * characterRotation);
+
         if (Input.GetButtonDown("Jump") && isGrounded)
         {
             rb.AddForce(Vector3.up * jumpForce, ForceMode.Impulse);

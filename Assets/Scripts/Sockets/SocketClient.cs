@@ -209,10 +209,10 @@ public class SocketClient : MonoBehaviour
         Debug.Log(repr_of_cards);
     }
 
-    public void Validate_Cards(List<string> card_Ids)
+    public void Validate_Cards(List<string> card_Ids, string phase)
     {
         if (connected)
-            socket.EmitAsync("phase_validation", new { cards = card_Ids });
+            socket.EmitAsync("phase_validation", new { cards = card_Ids, phase = phase });
     }
 
     private void next_phase(SocketIOClient.SocketIOResponse data)

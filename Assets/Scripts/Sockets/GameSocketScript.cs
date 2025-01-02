@@ -12,6 +12,8 @@ public class GameSocketScript : MonoBehaviour
 
     public Text debugobj2;
     public GameObject opponent_player;
+    public GameObject opponent_player2;
+    public string current_phase = "Draw";
 
     void Start()
     {
@@ -48,12 +50,13 @@ public class GameSocketScript : MonoBehaviour
             card_Ids.Add(strippedName);
             Debug.Log(strippedName);
         }
-        SocketScript.Validate_Cards(card_Ids);
+        SocketScript.Validate_Cards(card_Ids, current_phase);
     }
 
     public void next_phase(string my_cards, string oponent_cards, string phase, string timer)
     {
         Debug.Log($"Next {my_cards}, {oponent_cards}, {phase}, {timer}");
+        current_phase = phase;
         debugobj2.text = $"Phase: {phase}";
     }
 
@@ -75,7 +78,7 @@ public class GameSocketScript : MonoBehaviour
         string[] rotationParts = transformParts[1].Split('_');
 
         // Ensure the string has exactly 3 parts
-        if (positionParts.Length != 3 || rotationParts.Length != 3)
+        if (positionParts.Length != 3 || rotationParts.Length != 4)
         {
             Debug.LogError($"Invalid position format. Expected 'x_y_z:rx_ry_rz'. {transformString} {positionParts} {positionParts.Length}");
             return;
@@ -88,10 +91,16 @@ public class GameSocketScript : MonoBehaviour
         float rx = float.Parse(rotationParts[0]);
         float ry = float.Parse(rotationParts[1]);
         float rz = float.Parse(rotationParts[2]);
+        float rw = float.Parse(rotationParts[3]);
 
+        Debug.Log($"Recieving: {x} {y} {z} {rx} {ry} {rz} {rw}");
         // Set the opponent_player's position
         opponent_player.transform.position = new Vector3(-x, y, -z);
-        opponent_player.transform.rotation = Quaternion.Euler(rx, -ry, rz);
+        opponent_player.transform.rotation = new Quaternion(rx, ry, rz, rw);
+
+        //opponent_player2.transform.position = new Vector3(-x + 1, y, -z);
+        //opponent_player2.transform.rotation = new Quaternion(rx, -ry, -rz, rw);
+
     }
 
     public void send_player_position(string position)

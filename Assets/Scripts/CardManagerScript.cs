@@ -13,9 +13,13 @@ public class CardManagerScript : MonoBehaviour
 
     private string baseUrl;
     private string saveFolderPath = "Assets/StreamingAssets/Card_Data";
-    private string JsonPath = "Assets/StreamingAssets/Card_Data/id_to_name.json";
+    private string JsonPathName = "Assets/StreamingAssets/Card_Data/id_to_name.json";
+    private string JsonPathType1 = "Assets/StreamingAssets/Card_Data/id_to_type1.json";
+    private string JsonPathType2 = "Assets/StreamingAssets/Card_Data/id_to_type2.json";
 
     private Dictionary<string, string> idToNameMapping = new Dictionary<string, string>();
+    private Dictionary<string, string> idToType1Mapping = new Dictionary<string, string>();
+    private Dictionary<string, string> idToType2Mapping = new Dictionary<string, string>();
 
     void Start()
     {
@@ -50,14 +54,18 @@ public class CardManagerScript : MonoBehaviour
         {
             string id = item[0];
             string name = item[1];
-            string imageUrl = baseUrl + "static/" + item[2];
+            string type1 = item[2];
+            string type2 = item[3];
+            string imageUrl = baseUrl + "static/" + item[4];
 
-            yield return StartCoroutine(Fetch_Image_and_Store(id, name, imageUrl)); // Fetch the image from the URL
+            yield return StartCoroutine(Fetch_Image_and_Store(id, name, imageUrl, type1, type2)); // Fetch the image from the URL
         }
-        SaveNameMappingToJson();
+        SaveNameMappingToJson(idToNameMapping, JsonPathName);
+        SaveNameMappingToJson(idToType1Mapping, JsonPathType1);
+        SaveNameMappingToJson(idToType2Mapping, JsonPathType2);
     }
 
-    IEnumerator Fetch_Image_and_Store(string id, string name, string imageUrl)
+    IEnumerator Fetch_Image_and_Store(string id, string name, string imageUrl, string type1, string type2)
     {
         Debug.Log($"Requesting {imageUrl}");
         UnityWebRequest imageRequest = UnityWebRequestTexture.GetTexture(imageUrl);
@@ -77,6 +85,8 @@ public class CardManagerScript : MonoBehaviour
         byte[] imageBytes = texture.EncodeToPNG();
         File.WriteAllBytes(filePath, imageBytes); // Save the PNG to the specified path
         idToNameMapping[formattedId] = name;
+        idToType1Mapping[formattedId] = type1;
+        idToType2Mapping[formattedId] = type2;
     }
 
 
@@ -191,35 +201,38 @@ public class CardManagerScript : MonoBehaviour
         }
     }
 
-    private void SaveNameMappingToJson()
+    private void SaveNameMappingToJson(Dictionary<string, string> Dict_To_Save, string JsonPath)
     {
-        LoadNameMappingFromJson();
+        LoadNameMappingFromJson(Dict_To_Save, JsonPath);
 
         // Add new key-value pairs to the dictionary
-        foreach (var entry in idToNameMapping)
+        foreach (var entry in Dict_To_Save)
         {
-            if (!idToNameMapping.ContainsKey(entry.Key))
-                idToNameMapping[entry.Key] = entry.Value;
+            if (!Dict_To_Save.ContainsKey(entry.Key))
+                Dict_To_Save[entry.Key] = entry.Value;
         }
 
         // Convert the dictionary to JSON
-        string json = JsonConvert.SerializeObject(idToNameMapping, Formatting.Indented);
+        string json = JsonConvert.SerializeObject(Dict_To_Save, Formatting.Indented);
 
         Debug.Log(JsonPath);
         // Write the updated JSON to the file
         File.WriteAllText(JsonPath, json);
-        Debug.Log($"Name mapping saved to {JsonPath}");
+        Debug.Log($"Mapping saved to {JsonPath}");
     }
 
-    public void LoadNameMappingFromJson()
+    public void LoadNameMappingFromJson(Dictionary<string, string> Dict_To_Load, string JsonPath)
     {
         if (File.Exists(JsonPath))
         {
             string json = File.ReadAllText(JsonPath);
-            idToNameMapping = JsonConvert.DeserializeObject<Dictionary<string, string>>(json);
             Debug.Log("Name mapping loaded from JSON");
+            Dict_To_Load = JsonConvert.DeserializeObject<Dictionary<string, string>>(json);
         }
         else
+        {
             Debug.Log("No existing JSON found, starting fresh.");
+            Dict_To_Load = new Dictionary<string, string>();
+        }
     }
 }
