@@ -48,6 +48,7 @@ public class SocketClient : MonoBehaviour
         socket.On("phase_validation_accepted", (data) => { ErrorCatcher(() => { phase_validation_accepted(data); }); });
         socket.On("phase_validation_denied", (data) => { ErrorCatcher(() => { phase_validation_denied(data); }); });
         socket.On("player_move", (data) => { ErrorCatcher(() => { set_player_position(data); }); });
+        socket.On("set_deck", (data) => { ErrorCatcher(() => { set_deck(data); }); });
 
         socket.ConnectAsync();
     }
@@ -214,6 +215,11 @@ public class SocketClient : MonoBehaviour
         if (connected)
             socket.EmitAsync("phase_validation", new { cards = card_Ids, phase = phase });
     }
+    public void Validate_Card(int card_Id, int card_slot, string phase)
+    {
+        if (connected)
+            socket.EmitAsync("card_validation", new { card = card_Id, slot = card_slot, phase = phase });
+    }
 
     private void next_phase(SocketIOClient.SocketIOResponse data)
     {
@@ -245,5 +251,12 @@ public class SocketClient : MonoBehaviour
     {
         if (connected)
             socket.EmitAsync("player_move", new { position = position });
+    }
+
+    private void set_deck(SocketIOClient.SocketIOResponse data)
+    {
+        string Q1 = parse_response(data, "you");
+        string Q2 = parse_response(data, "oponent");
+        functionQueue.Enqueue(() => { GameScript.set_deck(Q1, Q2); });
     }
 }

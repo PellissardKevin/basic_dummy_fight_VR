@@ -5,9 +5,10 @@ using UnityEngine.UI;
 
 public class GameSocketScript : MonoBehaviour
 {
-    private SocketClient SocketScript;
+    [HideInInspector]public SocketClient SocketScript;
     public Text DebugOutput;
     public Deck3DManagerScript Deck3DManager;
+    public PupitreScript PupitreScript;
     public PC_Card_Interaction Card_Interaction_Script;
 
     public Text debugobj2;
@@ -101,6 +102,16 @@ public class GameSocketScript : MonoBehaviour
     public void send_player_position(string position)
     {
         SocketScript.send_player_position(position);
+    }
+
+    public void set_deck(string myDeckQuantity, string oponentDeckQuantity)
+    {
+        int Q1 = int.Parse(myDeckQuantity);
+        int Q2 = int.Parse(oponentDeckQuantity);
+
+        PupitreScript.Spawn_Deck(Q1);
+        Deck3DManager.Spawn_Deck(Q1);
+        Debug.Log($"set deck: {Q1}, {Q2}");
     }
 
 }
