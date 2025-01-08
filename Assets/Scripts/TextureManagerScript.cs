@@ -6,9 +6,8 @@ using Newtonsoft.Json;
 
 public class TextureManagerScript : MonoBehaviour
 {
-
-    private string saveFolderPath = "Assets/StreamingAssets/Card_Data";
-    private string JsonPath = "Assets/StreamingAssets/Card_Data/id_to_name.json";
+    private string PathToTexture = Path.Combine(Application.streamingAssetsPath, "Card_Data");
+    private string JsonPath = Path.Combine(Application.streamingAssetsPath, "Card_Data/id_to_name.json");
 
     private Dictionary<string, string> idToNameMapping = new Dictionary<string, string>();
 
@@ -19,10 +18,9 @@ public class TextureManagerScript : MonoBehaviour
 
     public void LoadNameMappingFromJson()
     {
-        string folderPath = Path.Combine(Application.streamingAssetsPath, "Card_Data/id_to_name.json");
-        if (File.Exists(folderPath))
+        if (File.Exists(JsonPath))
         {
-            string json = File.ReadAllText(folderPath);
+            string json = File.ReadAllText(JsonPath);
             idToNameMapping = JsonConvert.DeserializeObject<Dictionary<string, string>>(json);
             Debug.Log("Name mapping loaded from JSON");
         }
@@ -34,12 +32,11 @@ public class TextureManagerScript : MonoBehaviour
     {
         // Format the ID with leading zeros
         string formattedId = int.Parse(id).ToString("D3");
-        string folderPath = Path.Combine(Application.streamingAssetsPath, "Card_Data");
-        string[] files = Directory.GetFiles(folderPath, $"{formattedId}.png");
+        string[] files = Directory.GetFiles(PathToTexture, $"{formattedId}.png");
 
         if (files.Length == 0)
         {
-            Debug.LogError($"No image found for ID: {formattedId} in folder: {saveFolderPath}");
+            Debug.LogError($"No image found for ID: {formattedId} in folder: {PathToTexture}");
             return (null, null);
         }
 
@@ -79,6 +76,6 @@ public class TextureManagerScript : MonoBehaviour
         Material newMaterial = new Material(Shader.Find("Standard"));
         newMaterial.mainTexture = texture;
         faceRenderer.material = newMaterial;
-        Debug.Log($"Successfully instantiated prefab and applied image for ID: {id}");
+        //Debug.Log($"Successfully instantiated prefab and applied image for ID: {id}");
     }
 }

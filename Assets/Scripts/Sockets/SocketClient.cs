@@ -6,6 +6,7 @@ using System;
 using System.Collections.Concurrent;
 using System.Diagnostics;
 using Debug = UnityEngine.Debug;
+using System.Text.RegularExpressions;
 
 
 public class SocketClient : MonoBehaviour
@@ -107,7 +108,6 @@ public class SocketClient : MonoBehaviour
         functionQueue.Enqueue(() => { UiScript.server_recieved_match_response(); });
     }
 
-
     public void StartQueue()
     {
         if (connected)
@@ -135,7 +135,6 @@ public class SocketClient : MonoBehaviour
         if (connected)
             socket.EmitAsync("game_login", new { username = username, password = password });
     }
-
 
     public void EndMatch()
     {
@@ -206,8 +205,16 @@ public class SocketClient : MonoBehaviour
     private void HandlePickCards(SocketIOClient.SocketIOResponse data)
     {
         string repr_of_cards = parse_response(data, "cards");
-        functionQueue.Enqueue(() => { GameScript.Show(repr_of_cards); });
         Debug.Log(repr_of_cards);
+        //functionQueue.Enqueue(() => { GameScript.Show(repr_of_cards); });
+
+        repr_of_cards = Regex.Replace(repr_of_cards, @"[^0-9,]", "");
+        string[] card_ids = repr_of_cards.Split(new string[] { "," }, StringSplitOptions.None);
+        foreach (string card_id in card_ids)
+        {
+            functionQueue.Enqueue(() => { GameScript.Pick_Card(card_id); });
+            Debug.Log($"pick: {card_id}");
+        }
     }
 
     public void Validate_Cards(List<string> card_Ids, string phase)
@@ -215,7 +222,7 @@ public class SocketClient : MonoBehaviour
         if (connected)
             socket.EmitAsync("phase_validation", new { cards = card_Ids, phase = phase });
     }
-    public void Validate_Card(int card_Id, int card_slot, string phase)
+    public void Validate_Card(string card_Id, int card_slot, string phase)
     {
         if (connected)
             socket.EmitAsync("card_validation", new { card = card_Id, slot = card_slot, phase = phase });
@@ -223,12 +230,21 @@ public class SocketClient : MonoBehaviour
 
     private void next_phase(SocketIOClient.SocketIOResponse data)
     {
-        string my_cards = parse_response(data, "your_cards");
-        string oponent_cards = parse_response(data, "oponent_cards");
         string phase = parse_response(data, "phase");
         string timer = parse_response(data, "timer");
+        string my_cards = "";
+        if (phase == "Draw")
+            my_cards = parse_response(data, "your_cards");
+        string oponent_cards = "";
+        if (false)
+            oponent_cards = parse_response(data, "oponent_cards");
 
-        functionQueue.Enqueue(() => { GameScript.next_phase(my_cards, oponent_cards, phase, timer); });
+        string cards_to_reveal = "";
+        if (phase == "Reveal")
+            cards_to_reveal = parse_response(data, "cards_to_reveal");
+
+        Debug.Log($"Next {my_cards}, {oponent_cards}, {phase}, {timer}");
+        functionQueue.Enqueue(() => { GameScript.next_phase(my_cards, oponent_cards, cards_to_reveal, phase, timer); });
     }
 
     private void phase_validation_accepted(SocketIOClient.SocketIOResponse data)

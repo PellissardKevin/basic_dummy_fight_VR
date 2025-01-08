@@ -128,13 +128,5 @@ public class Deck3DManagerScript : MonoBehaviour
         Spawn_Deck(20);
     }
 
-    public void Pick_Cards(string jsonString)
-    {
-        jsonString = Regex.Replace(jsonString, @"[^0-9,]", "");
-        string[] card_ids = jsonString.Split(new string[] { "," }, StringSplitOptions.None);
-        foreach (string id in card_ids)
-            MoveCardToHand(id);
-    }
-
 }
 

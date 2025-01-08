@@ -2,6 +2,10 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using System.Globalization;
+using System.Text.RegularExpressions;
+using System;
+
 
 public class GameSocketScript : MonoBehaviour
 {
@@ -10,10 +14,14 @@ public class GameSocketScript : MonoBehaviour
     public Deck3DManagerScript Deck3DManager;
     public PupitreScript PupitreScript;
     public PC_Card_Interaction Card_Interaction_Script;
+    public TimerScript timerScript;
 
     public Text debugobj2;
+    public Text PhaseText;
     public GameObject opponent_player;
     public string current_phase = "Draw";
+
+    private bool phase_ended = false;
 
     void Start()
     {
@@ -25,19 +33,24 @@ public class GameSocketScript : MonoBehaviour
     //function that wait 5 seconds before telling the server that we're ready(via the socket script)
     private System.Collections.IEnumerator StartTimer()
     {
-        yield return new WaitForSeconds(5f);
+        yield return new WaitForSeconds(2f);
 
         SocketScript.Scene_is_ready();
     }
 
-    public void Show(string output)
+    /*public void Show(string output)
     {
         DebugOutput.text = output;
         Deck3DManager.Spawn_Deck(20);
-        Deck3DManager.Pick_Cards(output);
+        Pick_Cards(output);
+    }*/
+    public void Pick_Card(string id)
+    {
+        Deck3DManager.MoveCardToHand(id);
+        PupitreScript.MoveCardToHand(id);
     }
 
-    public void Validate_Cards()
+    /*public void Validate_Cards()
     {
         List<string> card_Ids = new List<string>();
 
@@ -51,13 +64,49 @@ public class GameSocketScript : MonoBehaviour
             Debug.Log(strippedName);
         }
         SocketScript.Validate_Cards(card_Ids, current_phase);
-    }
+    }*/
 
-    public void next_phase(string my_cards, string oponent_cards, string phase, string timer)
+    public void next_phase(string my_cards, string oponent_cards, string cards_to_reveal, string phase, string timer)
     {
         Debug.Log($"Next {my_cards}, {oponent_cards}, {phase}, {timer}");
+        timerScript.ResetTimer(float.Parse(timer, CultureInfo.InvariantCulture));
+
         current_phase = phase;
+        PhaseText.text = phase;
+
+        if (phase == "Draw")
+            Pick_Cards(my_cards);
+        if (phase == "Reveal")
+            RevealCards(cards_to_reveal);
+
         debugobj2.text = $"Phase: {phase}";
+        phase_ended = false;
+    }
+
+    public void RevealCards(string cards_to_reveal)
+    {
+        //format is: [[card_id, card_slot], [card_id, card_slot], ...]
+        Debug.Log($"Revealing cards: {cards_to_reveal}");
+    }
+
+    public void Pick_Cards(string jsonString)
+    {
+        jsonString = Regex.Replace(jsonString, @"[^0-9,]", "");
+        string[] card_ids = jsonString.Split(new string[] { "," }, StringSplitOptions.None);
+        foreach (string id in card_ids)
+        {
+            Pick_Card(id);
+        }
+    }
+
+    public void end_Phase()
+    {
+        if (!phase_ended)
+        {
+            phase_ended = true;
+            Debug.Log($"Validating Phase {current_phase}");
+            SocketScript.Validate_Cards(new List<string>(), current_phase);
+        }
     }
 
     public void phase_validation_accepted()

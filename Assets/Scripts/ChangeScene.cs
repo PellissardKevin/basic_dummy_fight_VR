@@ -19,6 +19,7 @@ public class ChangeScene : MonoBehaviour
     public void BackToMenu()
     {
         SceneManager.UnloadSceneAsync("Arena");
+        SceneManager.UnloadSceneAsync("Arena2");
         UnityEngine.SceneManagement.SceneManager.LoadScene("MenuRoomVR_Kevin", LoadSceneMode.Additive);
     }
 

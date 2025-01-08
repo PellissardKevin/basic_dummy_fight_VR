@@ -6,7 +6,7 @@ public class PupitreScript : MonoBehaviour
 {
 
     [SerializeField] private List<GameObject> deck_cards = new List<GameObject>();
-    [SerializeField] private List<GameObject> hand_cards = new List<GameObject>();
+    [SerializeField] public List<GameObject> hand_cards = new List<GameObject>();
     [SerializeField] private GameObject[] board_cards = new GameObject[7];
 
     public Transform deck_spawn_point;
@@ -18,25 +18,17 @@ public class PupitreScript : MonoBehaviour
 
     public TextureManagerScript textureManager;
 
-    void Start()
+    public void DebugDraw()
     {
         Spawn_Deck(20);
         MoveCardToHand("5");
+        MoveCardToHand("3");
+        MoveCardToHand("2");
+        MoveCardToHand("6");
         MoveCardToHand("7");
         MoveCardToHand("13");
-        MoveCardToBoard(hand_cards[0], 0);
-        MoveCardToHand("14");
-        MoveCardToBoard(hand_cards[0], 1);
-        MoveCardToHand("15");
-        MoveCardToBoard(hand_cards[0], 2);
-        MoveCardToHand("16");
-        MoveCardToBoard(hand_cards[0], 3);
-        MoveCardToHand("17");
-        MoveCardToBoard(hand_cards[0], 4);
-        MoveCardToHand("18");
-        MoveCardToBoard(hand_cards[0], 5);
-        MoveCardToHand("19");
-        MoveCardToBoard(hand_cards[0], 6);
+        MoveCardToHand("21");
+        MoveCardToHand("25");
     }
 
     public void Spawn_Deck(int quantity)
@@ -90,15 +82,14 @@ public class PupitreScript : MonoBehaviour
     {
         int card_count = hand_cards.Count;
         int loop_count = 0;
-        float card_spacing = 0.3f;
-        float curve_height = 0.5f;
+        float card_spacing = 0.35f;
         foreach (GameObject card in hand_cards)
         {
             float x_offset = (loop_count - (card_count - 1) / 2f) * card_spacing;
             card.transform.position = new Vector3(
                 hand_spawn_point.position.x + x_offset,
                 hand_spawn_point.position.y,
-                hand_spawn_point.position.z - (loop_count - card_count / 2) * 0.001f
+                hand_spawn_point.position.z
             );
             card.transform.rotation = hand_spawn_point.rotation;
 
