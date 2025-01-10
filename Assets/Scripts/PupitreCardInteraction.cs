@@ -16,39 +16,6 @@ public class PupitreCardInteraction : MonoBehaviour
         GameSocketScript.SocketScript.Validate_Card(card_id, card_position, phase);
     }
 
-    void Start()
-    {
-        StartCoroutine(DebugTest(4f));
-    }
-    private IEnumerator DebugTest(float delay)
-    {
-        // Wait for the specified delay in seconds
-        yield return new WaitForSeconds(delay);
-
-        if (Pupitre_Script == null)
-        {
-            Debug.LogError("Pupitre_Script is null");
-            yield break;
-        }
-        if (Pupitre_Script.hand_cards == null)
-        {
-            Debug.LogError("Pupitre_Script.hand_cards is null");
-            yield break;
-        }
-        int count = 0;
-
-        string text = "";
-        foreach(GameObject card in Pupitre_Script.hand_cards)
-        {
-            count += 1;
-            string card_id = card.name.Substring(0, 3);
-            string card_type = TypeManagerScript.GetType1FromID(card_id);
-            text += $"{card_type}\n";
-        }
-        text += $"Total cards: {count}";
-        debugobj.text = text;
-    }
-
     public void Test1()
     {
         debugobj.text = "Test1";
@@ -59,7 +26,7 @@ public class PupitreCardInteraction : MonoBehaviour
             if(card_type == "Equipement")
             {
                 Debug.Log($"Test1: Equipement card found: {card_id}");
-                GameSocketScript.SocketScript.Validate_Card(card_id, 0, GameSocketScript.current_phase);
+                MoveCardToBoard(card_id, 0);
                 return;
             }
         }
@@ -76,7 +43,7 @@ public class PupitreCardInteraction : MonoBehaviour
             if(card_type != "Equipement")
             {
                 Debug.Log($"Test2: Non Equipement card found: {card_id}");
-                GameSocketScript.SocketScript.Validate_Card(card_id, 0, GameSocketScript.current_phase);
+                MoveCardToBoard(card_id, 3);
                 return;
             }
         }
@@ -93,7 +60,7 @@ public class PupitreCardInteraction : MonoBehaviour
             if(card_type == "Trap")
             {
                 Debug.Log($"Test3: Trap card found: {card_id}");
-                GameSocketScript.SocketScript.Validate_Card(card_id, 0, GameSocketScript.current_phase);
+                MoveCardToBoard(card_id, 1);
                 return;
             }
         }
@@ -110,7 +77,7 @@ public class PupitreCardInteraction : MonoBehaviour
             if(card_type != "Trap")
             {
                 Debug.Log($"Test4: Non Trap card found: {card_id}");
-                GameSocketScript.SocketScript.Validate_Card(card_id, 0, GameSocketScript.current_phase);
+                MoveCardToBoard(card_id, 4);
                 return;
             }
         }
@@ -127,7 +94,7 @@ public class PupitreCardInteraction : MonoBehaviour
             if(card_type == "Action")
             {
                 Debug.Log($"Test5: Action card found: {card_id}");
-                GameSocketScript.SocketScript.Validate_Card(card_id, 0, GameSocketScript.current_phase);
+                MoveCardToBoard(card_id, 6);
                 return;
             }
         }
@@ -144,11 +111,46 @@ public class PupitreCardInteraction : MonoBehaviour
             if(card_type != "Action")
             {
                 Debug.Log($"Test6: Non Action card found: {card_id}");
-                GameSocketScript.SocketScript.Validate_Card(card_id, 0, GameSocketScript.current_phase);
+                MoveCardToBoard(card_id, 2);
                 return;
             }
         }
         Debug.Log("Test6: No wrong card found");
         debugobj.text = "No wrong card found";
+    }
+
+    private bool IsSlotAvailable(int slot_index)
+    {
+        return (Pupitre_Script.board_cards[slot_index] == null);
+    }
+
+    private bool can_move_card(string card_id, int slot_index)
+    {
+        if(!IsSlotAvailable(slot_index))
+            return false;
+        string type = TypeManagerScript.GetType1FromID(card_id);
+        string phase = GameSocketScript.current_phase;
+
+        if (phase == "Action" && slot_index == 6 && type == "Action") //card action can only be played in the action slot an
+            return true;
+        if (phase != "Preparation" || slot_index == 6 ||type == "Action") //card action should work in condition before
+            return false;                                                   //only non action cards on phase preparation should be left
+        if (slot_index < 3 && type == "Equipement") //equipement cards can only be played in the first 3 slots
+            return true;
+        if (slot_index > 2 && type == "Trap")    //trap cards can only be played in the last 3 slots
+            return true;
+
+        return false;   //rest is invalid
+    }
+
+    private void MoveCardToBoard(string card_id, int slot_index)
+    {
+        if(can_move_card(card_id, slot_index))
+        {
+            Pupitre_Script.MoveCardToBoard(card_id, slot_index);
+            Validate_Card(card_id, slot_index, GameSocketScript.current_phase);
+        }
+        else
+            Debug.Log($"Slot {slot_index} is not available");
     }
 }

@@ -206,7 +206,6 @@ public class SocketClient : MonoBehaviour
     {
         string repr_of_cards = parse_response(data, "cards");
         Debug.Log(repr_of_cards);
-        //functionQueue.Enqueue(() => { GameScript.Show(repr_of_cards); });
 
         repr_of_cards = Regex.Replace(repr_of_cards, @"[^0-9,]", "");
         string[] card_ids = repr_of_cards.Split(new string[] { "," }, StringSplitOptions.None);

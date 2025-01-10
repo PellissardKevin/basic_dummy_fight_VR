@@ -7,7 +7,7 @@ public class PupitreScript : MonoBehaviour
 
     [SerializeField] private List<GameObject> deck_cards = new List<GameObject>();
     [SerializeField] public List<GameObject> hand_cards = new List<GameObject>();
-    [SerializeField] private GameObject[] board_cards = new GameObject[7];
+    [SerializeField] public GameObject[] board_cards = new GameObject[7];
 
     public Transform deck_spawn_point;
     public Transform hand_spawn_point;
@@ -76,6 +76,20 @@ public class PupitreScript : MonoBehaviour
         {
             Debug.Log($"Error: {ex.Message}");
         }
+    }
+
+    public void MoveCardToBoard(string id, int slot_index)
+    {
+        GameObject card_to_move = null;
+        foreach (GameObject card in hand_cards)
+            if (card != null && card.name.Substring(0, 3) == id)
+                card_to_move = card;
+
+        hand_cards.Remove(card_to_move);
+        board_cards[slot_index] = card_to_move;
+
+        card_to_move.transform.position = board_spawn_point[slot_index].position;
+
     }
 
     public void AddaptAllCardsPositions()

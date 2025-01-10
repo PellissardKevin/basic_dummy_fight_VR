@@ -38,33 +38,11 @@ public class GameSocketScript : MonoBehaviour
         SocketScript.Scene_is_ready();
     }
 
-    /*public void Show(string output)
-    {
-        DebugOutput.text = output;
-        Deck3DManager.Spawn_Deck(20);
-        Pick_Cards(output);
-    }*/
     public void Pick_Card(string id)
     {
         Deck3DManager.MoveCardToHand(id);
         PupitreScript.MoveCardToHand(id);
     }
-
-    /*public void Validate_Cards()
-    {
-        List<string> card_Ids = new List<string>();
-
-        foreach (GameObject card in Card_Interaction_Script.cardList)
-        {
-
-            string cardName = card.name.Substring(0, 3); // Get the first 3 characters of the card's name (ID)
-            string strippedName = cardName.TrimStart('0'); // Strip leading zeros
-
-            card_Ids.Add(strippedName);
-            Debug.Log(strippedName);
-        }
-        SocketScript.Validate_Cards(card_Ids, current_phase);
-    }*/
 
     public void next_phase(string my_cards, string oponent_cards, string cards_to_reveal, string phase, string timer)
     {
@@ -86,7 +64,25 @@ public class GameSocketScript : MonoBehaviour
     public void RevealCards(string cards_to_reveal)
     {
         //format is: [[card_id, card_slot], [card_id, card_slot], ...]
+
+        cards_to_reveal = cards_to_reveal.Replace("],", ";").Replace("[", "").Replace("]", "").Replace(" ", "").Replace("\"", ""); // Replace "]," with ";", then remove "[" and "]" and "
+        string[] id_slot_pairs = cards_to_reveal.Split(';');
+        foreach (string id_slot_pair in id_slot_pairs)
+        {
+            string[] id_slot = id_slot_pair.Split(",");
+            Debug.Log(id_slot);
+            string id = id_slot[0];
+            int slot = int.Parse(id_slot[1]);
+            Debug.Log($"Revealing card: {id} in slot {slot}");
+        }
+
         Debug.Log($"Revealing cards: {cards_to_reveal}");
+    }
+
+    [ContextMenu("Reveal Cards")]
+    public void test_reveal()
+    {
+        RevealCards("[[\"5\", 2], [\"3\", 5], [\"1\", 3]]");
     }
 
     public void Pick_Cards(string jsonString)
