@@ -19,10 +19,8 @@ public class AutoLoginScript : MonoBehaviour
 
     IEnumerator WaitForLogin()
     {
-        // Wait until the variable becomes true
         yield return new WaitUntil(() => socketScript.SocketScript.connected);
 
-        Debug.Log("Ready to log in.");
 
         // Call the appropriate login function based on the environment
         #if UNITY_EDITOR
@@ -36,20 +34,13 @@ public class AutoLoginScript : MonoBehaviour
     {
         NameField.text = "Erwan";
         PasswordField.text = "test";
-        Debug.Log($"Auto login {NameField.text} {PasswordField.text}");
-        PerformLogin();
+        socketScript.Login();
     }
 
     void BuildLogin()
     {
         NameField.text = "New";
         PasswordField.text = "test";
-        Debug.Log($"Auto login {NameField.text} {PasswordField.text}");
-        PerformLogin();
-    }
-
-    void PerformLogin()
-    {
         socketScript.Login();
     }
 }

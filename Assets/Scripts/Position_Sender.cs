@@ -22,21 +22,18 @@ public class Position_Sender : MonoBehaviour
     void Update() //check regularily if need to send position
     {
         timer += Time.deltaTime;
-         if (timer >= sendInterval)
-        {
-            Vector3 currentPosition = transform.position;
-            Quaternion currentRotation = transform.rotation;
 
-            // Check if position has changed significantly
-            if (Vector3.Distance(currentPosition, lastSentPosition) > positionThreshold || Quaternion.Angle(currentRotation, lastSentRotation) > rotationThreshold)
-            {
-                string positionString = SerializePosition(currentPosition, transform.rotation);
-                gameSocketScript.send_player_position(positionString);
-                lastSentPosition = currentPosition;
-                lastSentRotation = currentRotation;
-            }
-            timer = 0f; // Reset the timer
+        Vector3 currentPosition = transform.position;
+        Quaternion currentRotation = transform.rotation;
+
+        if (timer >= sendInterval || Vector3.Distance(currentPosition, lastSentPosition) > positionThreshold || Quaternion.Angle(currentRotation, lastSentRotation) > rotationThreshold)
+        {
+            string positionString = SerializePosition(currentPosition, transform.rotation);
+            gameSocketScript.send_player_position(positionString);
+            lastSentPosition = currentPosition;
+            lastSentRotation = currentRotation;
         }
+        timer = 0f; // Reset the timer
     }
 
     private string SerializePosition(Vector3 position, Quaternion rotation)

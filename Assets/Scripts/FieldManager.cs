@@ -2,39 +2,37 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PupitreScript : MonoBehaviour
+public class FieldManager : MonoBehaviour
 {
-
     [SerializeField] private List<GameObject> deck_cards = new List<GameObject>();
-    [SerializeField] public List<GameObject> hand_cards = new List<GameObject>();
-    [SerializeField] public GameObject[] board_cards = new GameObject[7];
+    [SerializeField] private List<GameObject> hand_cards = new List<GameObject>();
+
+    [SerializeField] private GameObject[] Board = new GameObject[6];
+
+    public GameObject card_prefab;
+
+    public bool isPlayer = true;
 
     public Transform deck_spawn_point;
     public Transform hand_spawn_point;
-    public Transform[] board_spawn_point = new Transform[7];
-    public Transform board;
-
-    public GameObject card_prefab;
 
     public TextureManagerScript textureManager;
 
     public void Spawn_Deck(int quantity)
     {
-        Vector3 thickness = new Vector3(0, 0, -0.002f) * board.transform.lossyScale.z; // Offset for stacking in local space
+        Vector3 thickness = new Vector3(0, 0, -0.002f) * deck_spawn_point.lossyScale.z; // Offset for stacking in local space
         Delete_Deck(deck_cards); // Clear the previous deck
 
         for (int i = 0; i < quantity; i++)
         {
             GameObject card = Instantiate(card_prefab, deck_spawn_point.position, deck_spawn_point.rotation);
-            card.transform.SetParent(board.gameObject.transform);
             Vector3 offset = deck_spawn_point.gameObject.transform.rotation * (thickness * i);
             card.transform.position = deck_spawn_point.position + offset;
             card.transform.Rotate(0, 180, 0, Space.Self);
-            card.transform.localScale = card.transform.lossyScale / 3;
+            card.transform.localScale = card.transform.lossyScale * 3;
             deck_cards.Add(card);
         }
     }
-
 
     public void Delete_Deck(List<GameObject> list_of_cards)
     {
@@ -65,32 +63,23 @@ public class PupitreScript : MonoBehaviour
         }
     }
 
-    public void MoveCardToBoard(string id, int slot_index)
-    {
-        GameObject card_to_move = null;
-        foreach (GameObject card in hand_cards)
-            if (card != null && card.name.Substring(0, 3) == id)
-                card_to_move = card;
-
-        hand_cards.Remove(card_to_move);
-        board_cards[slot_index] = card_to_move;
-
-        card_to_move.transform.position = board_spawn_point[slot_index].position;
-
-    }
-
     public void AddaptAllCardsPositions()
     {
         int card_count = hand_cards.Count;
         int loop_count = 0;
-        float card_spacing = 0.35f;
+        float card_spacing = 1.5f;
+        float curve_height = 0.5f;
         foreach (GameObject card in hand_cards)
         {
             float x_offset = (loop_count - (card_count - 1) / 2f) * card_spacing;
+            float a = -curve_height / Mathf.Pow((card_count - 1) / 2f, 2); // Calculate steepness
+            float y_offset = a * Mathf.Pow(x_offset, 2) + curve_height;
+            if (float.IsNaN(y_offset) || float.IsInfinity(y_offset))
+                y_offset = 0;
             card.transform.position = new Vector3(
                 hand_spawn_point.position.x + x_offset,
-                hand_spawn_point.position.y,
-                hand_spawn_point.position.z
+                hand_spawn_point.position.y + y_offset,
+                hand_spawn_point.position.z - (loop_count - card_count / 2) * 0.001f
             );
             card.transform.rotation = hand_spawn_point.rotation;
 
@@ -98,13 +87,36 @@ public class PupitreScript : MonoBehaviour
         }
     }
 
-    public void MoveCardToBoard(GameObject card, int slot_index)
+    public void PlaceCardOnBoard(string id, int slot_index)
     {
-        hand_cards.Remove(card);
-        board_cards[slot_index] = card;
-        card.transform.position = board_spawn_point[slot_index].position;
-        card.transform.rotation = board_spawn_point[slot_index].rotation;
-        AddaptAllCardsPositions();
-    }
+        id = id.PadLeft(3, '0');
 
+        GameObject card_to_move = null;
+
+        if (hand_cards.Count > 0)
+            card_to_move = hand_cards[0];
+        else
+        {
+            Debug.Log("Card not found in hand");
+            return;
+        }
+
+        hand_cards.Remove(card_to_move);
+        AddaptAllCardsPositions();
+
+        GameObject card_on_board = Board[slot_index].transform.GetChild(0).GetChild(0).gameObject;
+        if (card_on_board == null)
+        {
+            Debug.Log("Card not found on board");
+        }
+        textureManager.Texture_Card(card_on_board, id);
+        Board[slot_index].GetComponent<Animator>().SetTrigger("Reveal");
+
+        #if UNITY_EDITOR
+        DestroyImmediate(card_to_move);
+        #else
+        Destroy(card_to_move);
+        #endif
+
+    }
 }

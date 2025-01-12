@@ -7,6 +7,8 @@ public class PreventBugWhenOffline : MonoBehaviour
 {
     public MonoBehaviour[] scriptsToDeactivate;
     public PupitreScript pupitreScript;
+    public FieldManager FieldManagerScript;
+    public FieldManager FieldManagerScriptOponent;
 
     void Awake()
     {
@@ -20,7 +22,41 @@ public class PreventBugWhenOffline : MonoBehaviour
                 if (script != null)
                     script.enabled = false;
             }
-            pupitreScript.DebugDraw();
+            pupitre_debug_draw();
+            DebugDraw();
+            DebugDraw2();
+
         }
+    }
+
+    public void DebugDraw()
+    {
+        FieldManagerScript.Spawn_Deck(20);
+        FieldManagerScript.MoveCardToHand("5");
+        FieldManagerScript.MoveCardToHand("9");
+        FieldManagerScript.MoveCardToHand("12");
+        FieldManagerScript.MoveCardToHand("3");
+        FieldManagerScript.MoveCardToHand("21");
+
+        FieldManagerScript.PlaceCardOnBoard("005", 0);
+
+    }
+    public void pupitre_debug_draw()
+    {
+        pupitreScript.Spawn_Deck(20);
+        pupitreScript.MoveCardToHand("5");
+        pupitreScript.MoveCardToHand("9");
+        pupitreScript.MoveCardToHand("12");
+        pupitreScript.MoveCardToHand("3");
+        pupitreScript.MoveCardToHand("21");
+    }
+    public void DebugDraw2()
+    {
+        FieldManagerScriptOponent.Spawn_Deck(20);
+        FieldManagerScriptOponent.MoveCardToHand("6");
+        FieldManagerScriptOponent.MoveCardToHand("8");
+        FieldManagerScriptOponent.MoveCardToHand("13");
+        FieldManagerScriptOponent.MoveCardToHand("2");
+        FieldManagerScriptOponent.MoveCardToHand("22");
     }
 }

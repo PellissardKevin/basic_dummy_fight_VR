@@ -8,6 +8,7 @@ public class Play : EditorWindow
 {
 
     private string ArenaScene = "Assets/Scenes/Arena.unity";
+    private string ArenaScene2 = "Assets/Scenes/Arena2.unity";
     private string MenuScene = "Assets/Scenes/MenuRoomVR_Kevin.unity";
     private string NetworkingScene = "Assets/Scenes/Networking.unity";
 
@@ -30,6 +31,10 @@ public class Play : EditorWindow
         if (GUILayout.Button("Switch to Arena"))
         {
             SwitchScene(ArenaScene);
+        }
+        if (GUILayout.Button("Switch to Arena2"))
+        {
+            SwitchScene(ArenaScene2);
         }
 
         if (GUILayout.Button("Switch to Menu"))

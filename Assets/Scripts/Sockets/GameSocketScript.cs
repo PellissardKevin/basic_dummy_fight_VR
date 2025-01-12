@@ -10,16 +10,23 @@ using System;
 public class GameSocketScript : MonoBehaviour
 {
     [HideInInspector]public SocketClient SocketScript;
-    public Text DebugOutput;
     public Deck3DManagerScript Deck3DManager;
     public PupitreScript PupitreScript;
-    public PC_Card_Interaction Card_Interaction_Script;
     public TimerScript timerScript;
 
+    public FieldManager FieldManagerPlayer;
+    public FieldManager FieldManagerOponent;
+
+    public PC_Card_Interaction Card_Interaction_Script;
+
+    public Text DebugOutput;
     public Text debugobj2;
+
     public Text PhaseText;
     public GameObject opponent_player;
     public string current_phase = "Draw";
+
+    public Material TurnEffect;
 
     private bool phase_ended = false;
 
@@ -42,6 +49,15 @@ public class GameSocketScript : MonoBehaviour
     {
         Deck3DManager.MoveCardToHand(id);
         PupitreScript.MoveCardToHand(id);
+        FieldManagerPlayer.MoveCardToHand(id);
+        FieldManagerOponent.MoveCardToHand(id);
+    }
+    public void Reveal_Card(string id, int slot, bool isPlayer)
+    {
+        if (isPlayer)
+            FieldManagerPlayer.PlaceCardOnBoard(id, slot);
+        else
+            FieldManagerOponent.PlaceCardOnBoard(id, slot);
     }
 
     public void next_phase(string my_cards, string oponent_cards, string cards_to_reveal, string phase, string timer)
@@ -51,6 +67,11 @@ public class GameSocketScript : MonoBehaviour
 
         current_phase = phase;
         PhaseText.text = phase;
+
+        if (phase == "Preparation")
+            TurnEffect.color = new Color(0, 1, 0);
+        else
+            TurnEffect.color = new Color(1, 0, 0);
 
         if (phase == "Draw")
             Pick_Cards(my_cards);
@@ -64,9 +85,16 @@ public class GameSocketScript : MonoBehaviour
     public void RevealCards(string cards_to_reveal)
     {
         //format is: [[card_id, card_slot], [card_id, card_slot], ...]
+        if (cards_to_reveal == "[]")
+        {
+            Debug.Log("No cards to reveal");
+            return;
+        }
+        Debug.Log($"Revealing cards: {cards_to_reveal}");
 
         cards_to_reveal = cards_to_reveal.Replace("],", ";").Replace("[", "").Replace("]", "").Replace(" ", "").Replace("\"", ""); // Replace "]," with ";", then remove "[" and "]" and "
         string[] id_slot_pairs = cards_to_reveal.Split(';');
+        Debug.Log(id_slot_pairs);
         foreach (string id_slot_pair in id_slot_pairs)
         {
             string[] id_slot = id_slot_pair.Split(",");
@@ -74,6 +102,7 @@ public class GameSocketScript : MonoBehaviour
             string id = id_slot[0];
             int slot = int.Parse(id_slot[1]);
             Debug.Log($"Revealing card: {id} in slot {slot}");
+            FieldManagerOponent.PlaceCardOnBoard(id, slot);
         }
 
         Debug.Log($"Revealing cards: {cards_to_reveal}");
@@ -156,6 +185,8 @@ public class GameSocketScript : MonoBehaviour
 
         PupitreScript.Spawn_Deck(Q1);
         Deck3DManager.Spawn_Deck(Q1);
+        FieldManagerPlayer.Spawn_Deck(Q1);
+        FieldManagerOponent.Spawn_Deck(Q2);
         Debug.Log($"set deck: {Q1}, {Q2}");
     }
 
