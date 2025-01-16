@@ -22,7 +22,7 @@ public class PreventBugWhenOffline : MonoBehaviour
                 if (script != null)
                     script.enabled = false;
             }
-            pupitre_debug_draw();
+            pupitre_debug_draw(pupitreScript);
             DebugDraw();
             DebugDraw2();
 
@@ -41,7 +41,7 @@ public class PreventBugWhenOffline : MonoBehaviour
         FieldManagerScript.PlaceCardOnBoard("005", 0);
 
     }
-    public void pupitre_debug_draw()
+    public void pupitre_debug_draw(PupitreScript pupitreScript)
     {
         pupitreScript.Spawn_Deck(20);
         pupitreScript.MoveCardToHand("5");
@@ -49,6 +49,9 @@ public class PreventBugWhenOffline : MonoBehaviour
         pupitreScript.MoveCardToHand("12");
         pupitreScript.MoveCardToHand("3");
         pupitreScript.MoveCardToHand("21");
+        pupitreScript.MoveCardToHand("1");
+        pupitreScript.MoveCardToHand("16");
+        pupitreScript.MoveCardToHand("19");
     }
     public void DebugDraw2()
     {

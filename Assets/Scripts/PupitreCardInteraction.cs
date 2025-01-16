@@ -5,11 +5,122 @@ using UnityEngine.UI;
 
 public class PupitreCardInteraction : MonoBehaviour
 {
+    //script refs
     public GameSocketScript GameSocketScript;
-    public PupitreScript Pupitre_Script;
+    public PupitreScript pupitreScript;
     public CardTypesManagerScript TypeManagerScript;
 
     public Text debugobj;
+
+    public GameObject Board; //pupitre board with slots
+    public GameObject[] Slots = new GameObject[8]; //0-2 equipement, 3-5 trap, 6 action, 7 trash
+    private int slot_number = -1; //-1 no selection
+
+    bool isDragging = false; //dragging vars
+    GameObject draggedObject;
+    Vector3 originalPosition;
+    string drag_phase;
+
+    void Update()
+    {
+        if (isDragging)
+            UpdateDragging();
+        else
+            DetectDragging();
+    }
+
+    private void UpdateDragging()
+    {
+        int previous_slot = slot_number;
+        if (!Input.GetMouseButton(0))
+        {
+            StopDragging();
+            return;
+        }
+
+        //Debug.Log("UpdateDragging");
+
+        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+        RaycastHit hit;
+
+        if (Physics.Raycast(ray, out hit, Mathf.Infinity, LayerMask.GetMask("PupitreLayer")))
+        {
+            if (hit.collider.gameObject == Board.gameObject)
+            {
+                draggedObject.transform.position = hit.point + new Vector3(0, 0, -0.1f);
+                slot_number = -1;
+            }
+
+            foreach (GameObject obj in Slots)
+            {
+                if (hit.collider.gameObject == obj)
+                {
+                    draggedObject.transform.position = obj.transform.position + new Vector3(0, 0, -0.01f);
+                    slot_number = System.Array.IndexOf(Slots, obj);
+                    break;
+                }
+            }
+        }
+
+        if (drag_phase != GameSocketScript.current_phase) //if phase changed, reset effects
+        {
+            set_effects(draggedObject.name.Substring(0, 3));
+            return;
+        }
+    }
+
+    private void DetectDragging()
+    {
+        if (Input.GetMouseButtonDown(0))
+        {
+            Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+            RaycastHit hit;
+
+            if (Physics.Raycast(ray, out hit)) // If we hit something
+            {
+                foreach (GameObject obj in pupitreScript.hand_cards)
+                {
+                    if (hit.collider.gameObject == obj)
+                    {
+                        StartDragging(obj);
+                        break;
+                    }
+                }
+            }
+        }
+    }
+
+    private void StartDragging(GameObject obj)
+    {
+        isDragging = true;
+        draggedObject = obj;
+        originalPosition = obj.transform.position;
+        drag_phase = GameSocketScript.current_phase;
+        set_effects(draggedObject.name.Substring(0, 3));
+        Debug.Log($"Start dragging {obj.name}");
+    }
+
+    private void StopDragging()
+    {
+        isDragging = false;
+        if (!check_if_played())
+            draggedObject.transform.position = originalPosition;
+        draggedObject = null;
+        set_effects(null);
+        Debug.Log("Stop dragging");
+    }
+
+    private bool check_if_played()
+    {
+        Debug.Log("Check if played");
+        if (slot_number != -1)
+            if (can_move_card(draggedObject.name.Substring(0, 3), slot_number))
+            {
+                MoveCardToBoard(draggedObject.name.Substring(0, 3), slot_number);
+                return true;
+            }
+        return false;
+    }
 
     void Validate_Card(string card_id, int card_position, string phase)
     {
@@ -19,7 +130,7 @@ public class PupitreCardInteraction : MonoBehaviour
     public void Test1()
     {
         debugobj.text = "Test1";
-        foreach(GameObject card in Pupitre_Script.hand_cards)
+        foreach(GameObject card in pupitreScript.hand_cards)
         {
             string card_id = card.name.Substring(0, 3);
             string card_type = TypeManagerScript.GetType1FromID(card_id);
@@ -36,7 +147,7 @@ public class PupitreCardInteraction : MonoBehaviour
     public void Test2()
     {
         debugobj.text = "Test2";
-        foreach(GameObject card in Pupitre_Script.hand_cards)
+        foreach(GameObject card in pupitreScript.hand_cards)
         {
             string card_id = card.name.Substring(0, 3);
             string card_type = TypeManagerScript.GetType1FromID(card_id);
@@ -53,14 +164,14 @@ public class PupitreCardInteraction : MonoBehaviour
     public void Test3()
     {
         debugobj.text = "Test3";
-        foreach(GameObject card in Pupitre_Script.hand_cards)
+        foreach(GameObject card in pupitreScript.hand_cards)
         {
             string card_id = card.name.Substring(0, 3);
             string card_type = TypeManagerScript.GetType1FromID(card_id);
             if(card_type == "Trap")
             {
                 Debug.Log($"Test3: Trap card found: {card_id}");
-                MoveCardToBoard(card_id, 1);
+                MoveCardToBoard(card_id, 4);
                 return;
             }
         }
@@ -70,7 +181,7 @@ public class PupitreCardInteraction : MonoBehaviour
     public void Test4()
     {
         debugobj.text = "Test4";
-        foreach(GameObject card in Pupitre_Script.hand_cards)
+        foreach(GameObject card in pupitreScript.hand_cards)
         {
             string card_id = card.name.Substring(0, 3);
             string card_type = TypeManagerScript.GetType1FromID(card_id);
@@ -87,7 +198,7 @@ public class PupitreCardInteraction : MonoBehaviour
     public void Test5()
     {
         debugobj.text = "Test5";
-        foreach(GameObject card in Pupitre_Script.hand_cards)
+        foreach(GameObject card in pupitreScript.hand_cards)
         {
             string card_id = card.name.Substring(0, 3);
             string card_type = TypeManagerScript.GetType1FromID(card_id);
@@ -104,7 +215,7 @@ public class PupitreCardInteraction : MonoBehaviour
     public void Test6()
     {
         debugobj.text = "Test6";
-        foreach(GameObject card in Pupitre_Script.hand_cards)
+        foreach(GameObject card in pupitreScript.hand_cards)
         {
             string card_id = card.name.Substring(0, 3);
             string card_type = TypeManagerScript.GetType1FromID(card_id);
@@ -121,7 +232,7 @@ public class PupitreCardInteraction : MonoBehaviour
 
     private bool IsSlotAvailable(int slot_index)
     {
-        return (Pupitre_Script.board_cards[slot_index] == null);
+        return (pupitreScript.board_cards[slot_index] == null);
     }
 
     private bool can_move_card(string card_id, int slot_index)
@@ -130,6 +241,7 @@ public class PupitreCardInteraction : MonoBehaviour
             return false;
         string type = TypeManagerScript.GetType1FromID(card_id);
         string phase = GameSocketScript.current_phase;
+        Debug.Log($"can_move_card: {card_id} in slot {slot_index} on phase {phase} type {type}");
 
         if (phase == "Action" && slot_index == 6 && type == "Action") //card action can only be played in the action slot an
             return true;
@@ -147,10 +259,62 @@ public class PupitreCardInteraction : MonoBehaviour
     {
         if(can_move_card(card_id, slot_index))
         {
-            Pupitre_Script.MoveCardToBoard(card_id, slot_index);
+            pupitreScript.MoveCardToBoard(card_id, slot_index);
             Validate_Card(card_id, slot_index, GameSocketScript.current_phase);
         }
         else
             Debug.Log($"Slot {slot_index} is not available");
+    }
+
+    private void set_effects(string card_id)
+    {
+        if(card_id == null)
+        {
+            foreach(GameObject slot in Slots)
+                deactivate(slot);
+            return;
+        }
+        string type = TypeManagerScript.GetType1FromID(card_id);
+        string phase = GameSocketScript.current_phase;
+
+        for (int i = 0; i < Slots.Length; i++)
+        {
+            Debug.Log($"Checking slot {i}");
+            if (i == 7)
+            {
+                if (phase == "Discard")
+                    authorize(Slots[i]);
+                else
+                    prevent(Slots[i]);
+                continue;
+            }
+            if (can_move_card(card_id, i))
+            {
+                authorize(Slots[i]);
+                Debug.Log($"Slot {i} is available");
+            }
+            else
+            {
+                prevent(Slots[i]);
+                Debug.Log($"Slot {i} is not available");
+            }
+        }
+    }
+
+    private void authorize(GameObject obj)
+    {
+        obj.transform.GetChild(0).gameObject.SetActive(false);
+        obj.transform.GetChild(1).gameObject.SetActive(true);
+    }
+
+    private void prevent(GameObject obj)
+    {
+        obj.transform.GetChild(0).gameObject.SetActive(true);
+        obj.transform.GetChild(1).gameObject.SetActive(false);
+    }
+    private void deactivate(GameObject obj)
+    {
+        obj.transform.GetChild(0).gameObject.SetActive(false);
+        obj.transform.GetChild(1).gameObject.SetActive(false);
     }
 }

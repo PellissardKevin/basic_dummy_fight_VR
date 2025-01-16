@@ -10,7 +10,7 @@ using System;
 public class GameSocketScript : MonoBehaviour
 {
     [HideInInspector]public SocketClient SocketScript;
-    public Deck3DManagerScript Deck3DManager;
+    public UIDummyDamageDisplay DummyDisplay;
     public PupitreScript PupitreScript;
     public TimerScript timerScript;
 
@@ -18,9 +18,6 @@ public class GameSocketScript : MonoBehaviour
     public FieldManager FieldManagerOponent;
 
     public PC_Card_Interaction Card_Interaction_Script;
-
-    public Text DebugOutput;
-    public Text debugobj2;
 
     public Text PhaseText;
     public GameObject opponent_player;
@@ -47,7 +44,7 @@ public class GameSocketScript : MonoBehaviour
 
     public void Pick_Card(string id)
     {
-        Deck3DManager.MoveCardToHand(id);
+        Debug.Log($"Picking card: {id}");
         PupitreScript.MoveCardToHand(id);
         FieldManagerPlayer.MoveCardToHand(id);
         FieldManagerOponent.MoveCardToHand(id);
@@ -64,6 +61,7 @@ public class GameSocketScript : MonoBehaviour
     {
         Debug.Log($"Next {my_cards}, {oponent_cards}, {phase}, {timer}");
         timerScript.ResetTimer(float.Parse(timer, CultureInfo.InvariantCulture));
+        Debug.Log($"Cards to reveal: {cards_to_reveal}");
 
         current_phase = phase;
         PhaseText.text = phase;
@@ -78,50 +76,39 @@ public class GameSocketScript : MonoBehaviour
         if (phase == "Reveal")
             RevealCards(cards_to_reveal);
 
-        debugobj2.text = $"Phase: {phase}";
         phase_ended = false;
     }
 
     public void RevealCards(string cards_to_reveal)
     {
-        //format is: [[card_id, card_slot], [card_id, card_slot], ...]
-        if (cards_to_reveal == "[]")
+        //format "[[\"5\", 2, [[\"type\", 2, \"target\" ], [\"type\", 2, \"target\" ]]], [\"3\", 5, [[\"type\", 2, \"target\" ]]], [\"1\", 3, []]]"
+        var listOfCards = Newtonsoft.Json.JsonConvert.DeserializeObject<List<List<object>>>(cards_to_reveal);
+        foreach (var card in listOfCards)
         {
-            Debug.Log("No cards to reveal");
-            return;
+            string card_id = card[0].ToString();
+            int card_slot = Convert.ToInt32(card[1]);
+            Newtonsoft.Json.Linq.JArray effects = card[2] as Newtonsoft.Json.Linq.JArray;
+
+            foreach (var effect in effects)
+            {
+                var effectList = effect.ToObject<List<object>>();
+                string type = effectList[0].ToString();
+                int value = Convert.ToInt32(effectList[1]);
+                string target = effectList[2].ToString();
+                Debug.Log($"Type: {type}, Value: {value}, Target: {target}");
+                DummyDisplay.CreateFloatingText(type, value, target == "self");
+            }
+            FieldManagerOponent.PlaceCardOnBoard(card_id, card_slot);
+            Debug.Log($"Revealing card: {card_id} in slot {card_slot} with effects: {effects}");
         }
-        Debug.Log($"Revealing cards: {cards_to_reveal}");
-
-        cards_to_reveal = cards_to_reveal.Replace("],", ";").Replace("[", "").Replace("]", "").Replace(" ", "").Replace("\"", ""); // Replace "]," with ";", then remove "[" and "]" and "
-        string[] id_slot_pairs = cards_to_reveal.Split(';');
-        Debug.Log(id_slot_pairs);
-        foreach (string id_slot_pair in id_slot_pairs)
-        {
-            string[] id_slot = id_slot_pair.Split(",");
-            Debug.Log(id_slot);
-            string id = id_slot[0];
-            int slot = int.Parse(id_slot[1]);
-            Debug.Log($"Revealing card: {id} in slot {slot}");
-            FieldManagerOponent.PlaceCardOnBoard(id, slot);
-        }
-
-        Debug.Log($"Revealing cards: {cards_to_reveal}");
-    }
-
-    [ContextMenu("Reveal Cards")]
-    public void test_reveal()
-    {
-        RevealCards("[[\"5\", 2], [\"3\", 5], [\"1\", 3]]");
     }
 
     public void Pick_Cards(string jsonString)
     {
-        jsonString = Regex.Replace(jsonString, @"[^0-9,]", "");
-        string[] card_ids = jsonString.Split(new string[] { "," }, StringSplitOptions.None);
+        var card_ids = Newtonsoft.Json.JsonConvert.DeserializeObject<List<string>>(jsonString);
+
         foreach (string id in card_ids)
-        {
             Pick_Card(id);
-        }
     }
 
     public void end_Phase()
@@ -184,10 +171,16 @@ public class GameSocketScript : MonoBehaviour
         int Q2 = int.Parse(oponentDeckQuantity);
 
         PupitreScript.Spawn_Deck(Q1);
-        Deck3DManager.Spawn_Deck(Q1);
         FieldManagerPlayer.Spawn_Deck(Q1);
         FieldManagerOponent.Spawn_Deck(Q2);
         Debug.Log($"set deck: {Q1}, {Q2}");
+    }
+
+    [ContextMenu("Reveal Cards")]
+    public void test_reveal2()
+    {
+        //RevealCards2("[[\"5\", 2, [\"effect1\", \"effect2\"]], [\"3\", 5, [\"effect1\"]], [\"1\", 3, []]]");
+        RevealCards("[[\"5\", 2, [[\"type\", 2, \"target\" ], [\"type\", 2, \"target\" ]]], [\"3\", 5, [[\"type\", 2, \"target\" ]]], [\"1\", 3, []]]");
     }
 
 }
