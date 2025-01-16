@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.XR.Interaction.Toolkit;
 
 public class PupitreCardInteraction : MonoBehaviour
 {
@@ -9,6 +10,8 @@ public class PupitreCardInteraction : MonoBehaviour
     public GameSocketScript GameSocketScript;
     public PupitreScript pupitreScript;
     public CardTypesManagerScript TypeManagerScript;
+    public ActionBasedController XRLeftController;
+    public ActionBasedController XRRightController;
 
     public Text debugobj;
 
@@ -32,7 +35,7 @@ public class PupitreCardInteraction : MonoBehaviour
     private void UpdateDragging()
     {
         int previous_slot = slot_number;
-        if (!Input.GetMouseButton(0))
+        if (!DetectAction())
         {
             StopDragging();
             return;
@@ -71,7 +74,7 @@ public class PupitreCardInteraction : MonoBehaviour
 
     private void DetectDragging()
     {
-        if (Input.GetMouseButtonDown(0))
+        if (DetectAction())
         {
             Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
             RaycastHit hit;
@@ -316,5 +319,10 @@ public class PupitreCardInteraction : MonoBehaviour
     {
         obj.transform.GetChild(0).gameObject.SetActive(false);
         obj.transform.GetChild(1).gameObject.SetActive(false);
+    }
+
+    private bool DetectAction()
+    {
+        return Input.GetMouseButtonDown(0) || XRLeftController.activateAction.action.WasPressedThisFrame() || XRRightController.activateAction.action.WasPressedThisFrame();
     }
 }
