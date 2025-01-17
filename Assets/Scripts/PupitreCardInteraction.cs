@@ -7,7 +7,7 @@ using UnityEngine.XR.Interaction.Toolkit;
 public class PupitreCardInteraction : MonoBehaviour
 {
     //script refs
-    public GameSocketScript GameSocketScript;
+    public GameSocketScript gameSocketScript;
     public PupitreScript pupitreScript;
     public CardTypesManagerScript TypeManagerScript;
     public ActionBasedController XRLeftController;
@@ -65,7 +65,7 @@ public class PupitreCardInteraction : MonoBehaviour
             }
         }
 
-        if (drag_phase != GameSocketScript.current_phase) //if phase changed, reset effects
+        if (drag_phase != gameSocketScript.current_phase) //if phase changed, reset effects
         {
             set_effects(draggedObject.name.Substring(0, 3));
             return;
@@ -98,7 +98,7 @@ public class PupitreCardInteraction : MonoBehaviour
         isDragging = true;
         draggedObject = obj;
         originalPosition = obj.transform.position;
-        drag_phase = GameSocketScript.current_phase;
+        drag_phase = gameSocketScript.current_phase;
         set_effects(draggedObject.name.Substring(0, 3));
         Debug.Log($"Start dragging {obj.name}");
     }
@@ -127,7 +127,10 @@ public class PupitreCardInteraction : MonoBehaviour
 
     void Validate_Card(string card_id, int card_position, string phase)
     {
-        GameSocketScript.SocketScript.Validate_Card(card_id, card_position, phase);
+        if (gameSocketScript.SocketScript != null)
+           gameSocketScript.SocketScript.Validate_Card(card_id, card_position, phase);
+        else
+            Debug.Log("SocketScript is null");
     }
 
     public void Test1()
@@ -243,7 +246,7 @@ public class PupitreCardInteraction : MonoBehaviour
         if(!IsSlotAvailable(slot_index))
             return false;
         string type = TypeManagerScript.GetType1FromID(card_id);
-        string phase = GameSocketScript.current_phase;
+        string phase = gameSocketScript.current_phase;
         Debug.Log($"can_move_card: {card_id} in slot {slot_index} on phase {phase} type {type}");
 
         if (phase == "Action" && slot_index == 6 && type == "Action") //card action can only be played in the action slot an
@@ -263,7 +266,7 @@ public class PupitreCardInteraction : MonoBehaviour
         if(can_move_card(card_id, slot_index))
         {
             pupitreScript.MoveCardToBoard(card_id, slot_index);
-            Validate_Card(card_id, slot_index, GameSocketScript.current_phase);
+            Validate_Card(card_id, slot_index, gameSocketScript.current_phase);
         }
         else
             Debug.Log($"Slot {slot_index} is not available");
@@ -278,7 +281,7 @@ public class PupitreCardInteraction : MonoBehaviour
             return;
         }
         string type = TypeManagerScript.GetType1FromID(card_id);
-        string phase = GameSocketScript.current_phase;
+        string phase = gameSocketScript.current_phase;
 
         for (int i = 0; i < Slots.Length; i++)
         {
@@ -323,6 +326,8 @@ public class PupitreCardInteraction : MonoBehaviour
 
     private bool DetectAction()
     {
-        return Input.GetMouseButtonDown(0) || XRLeftController.activateAction.action.WasPressedThisFrame() || XRRightController.activateAction.action.WasPressedThisFrame();
+        if (XRLeftController != null && XRRightController != null)
+            return Input.GetMouseButtonDown(0) || XRLeftController.activateAction.action.WasPressedThisFrame() || XRRightController.activateAction.action.WasPressedThisFrame();
+        return Input.GetMouseButtonDown(0) || Input.GetMouseButton(0);
     }
 }

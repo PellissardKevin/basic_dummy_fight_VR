@@ -153,15 +153,6 @@
       "dependencies": {},
       "url": "https://packages.unity.com"
     },
-    "com.unity.pico.livepreview": {
-      "version": "file:C:/Users/Gaël DESCHAMPS/Downloads/Unity Live Preview Plugin-1.0.4-20241205",
-      "depth": 0,
-      "source": "local",
-      "dependencies": {
-        "com.unity.xr.management": "4.0.0",
-        "com.unity.xr.interaction.toolkit": "2.0.0"
-      }
-    },
     "com.unity.probuilder": {
       "version": "5.2.3",
       "depth": 0,
