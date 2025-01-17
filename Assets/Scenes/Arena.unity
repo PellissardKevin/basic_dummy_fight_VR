@@ -6231,6 +6231,10 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 2125840724}
     - target: {fileID: 1912682374203734715, guid: 374ecb2a486b84b43a25aca01f3e07d4, type: 3}
+      propertyPath: gameSocketScript
+      value: 
+      objectReference: {fileID: 2125840724}
+    - target: {fileID: 1912682374203734715, guid: 374ecb2a486b84b43a25aca01f3e07d4, type: 3}
       propertyPath: TypeManagerScript
       value: 
       objectReference: {fileID: 2118232665}

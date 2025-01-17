@@ -5,8 +5,8 @@ using UnityEngine.XR.Management;
 
 public class XRManagerScript : MonoBehaviour
 {
-    public AddScene2Script AddSceneScript;
     public GameObject Player;
+    public GameObject AddScene2Object;
 
     void Start()
     {
@@ -17,7 +17,7 @@ public class XRManagerScript : MonoBehaviour
             if (XRGeneralSettings.Instance.Manager.activeLoader != null)
             {
                 Debug.Log("VR headset is present.");
-                AddSceneScript.enabled = true;
+                AddScene2Object.SetActive(true);
             }
             else
             {
