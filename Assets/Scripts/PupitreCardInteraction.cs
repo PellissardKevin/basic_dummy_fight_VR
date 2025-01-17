@@ -10,8 +10,11 @@ public class PupitreCardInteraction : MonoBehaviour
     public GameSocketScript gameSocketScript;
     public PupitreScript pupitreScript;
     public CardTypesManagerScript TypeManagerScript;
+
     public ActionBasedController XRLeftController;
     public ActionBasedController XRRightController;
+    private Transform XRLeftTransform;
+    private Transform XRRightTransform;
 
     public Text debugobj;
 
@@ -23,16 +26,40 @@ public class PupitreCardInteraction : MonoBehaviour
     GameObject draggedObject;
     Vector3 originalPosition;
     string drag_phase;
+    public bool is_VR = false;
+    bool is_left = false;
+
+    void Start()
+    {
+        XRLeftTransform = XRLeftController.gameObject.transform;
+        XRRightTransform = XRRightController.gameObject.transform;
+    }
 
     void Update()
     {
         if (isDragging)
-            UpdateDragging();
+        {
+            if (is_VR)
+                UpdateDragging(null, null);
+            else
+            {
+                UpdateDragging(XRLeftTransform, XRLeftController);
+                UpdateDragging(XRRightTransform, XRRightController);
+            }
+        }
         else
-            DetectDragging();
+        {
+            if (is_VR)
+                DetectDragging(null, null);
+            else
+            {
+                DetectDragging(XRLeftTransform, XRLeftController);
+                DetectDragging(XRRightTransform, XRRightController);
+            }
+        }
     }
 
-    private void UpdateDragging()
+    private void UpdateDragging(Transform controller, ActionBasedController Controllerscript)
     {
         int previous_slot = slot_number;
         if (!DetectAction())
@@ -41,12 +68,22 @@ public class PupitreCardInteraction : MonoBehaviour
             return;
         }
 
-        //Debug.Log("UpdateDragging");
+        Vector3 Origin;
+        Vector3 Direction;
 
-        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-        RaycastHit hit;
+        if (is_VR)
+        {
+            Origin = controller.position;
+            Direction = controller.forward;
+        }
+        else
+        {
+            Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+            Origin = ray.origin;
+            Direction = ray.direction;
+        }
 
-        if (Physics.Raycast(ray, out hit, Mathf.Infinity, LayerMask.GetMask("PupitreLayer")))
+        if (Physics.Raycast(Origin, Direction, out RaycastHit hit, Mathf.Infinity, LayerMask.GetMask("PupitreLayer")))
         {
             if (hit.collider.gameObject == Board.gameObject)
             {
@@ -72,19 +109,32 @@ public class PupitreCardInteraction : MonoBehaviour
         }
     }
 
-    private void DetectDragging()
+    private void DetectDragging(Transform controller, ActionBasedController Controllerscript)
     {
         if (DetectAction())
         {
-            Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-            RaycastHit hit;
+            Vector3 Origin;
+            Vector3 Direction;
 
-            if (Physics.Raycast(ray, out hit)) // If we hit something
+            if (is_VR)
+            {
+                Origin = controller.position;
+                Direction = controller.forward;
+            }
+            else
+            {
+                Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+                Origin = ray.origin;
+                Direction = ray.direction;
+            }
+
+            if (Physics.Raycast(Origin, Direction, out RaycastHit hit, 10)) // If we hit something
             {
                 foreach (GameObject obj in pupitreScript.hand_cards)
                 {
                     if (hit.collider.gameObject == obj)
                     {
+                        is_left = Controllerscript == XRLeftController;
                         StartDragging(obj);
                         break;
                     }
@@ -326,8 +376,18 @@ public class PupitreCardInteraction : MonoBehaviour
 
     private bool DetectAction()
     {
-        if (XRLeftController != null && XRRightController != null)
+        if (is_VR)
+        {
+            if (is_left && isDragging)
+                return XRLeftController.activateAction.action.WasPressedThisFrame();
+            if (!is_left && isDragging)
+                return XRRightController.activateAction.action.WasPressedThisFrame();
+            return XRLeftController.activateAction.action.WasPressedThisFrame() || XRRightController.activateAction.action.WasPressedThisFrame();
+        }
+        else
+            return Input.GetMouseButtonDown(0);
+        /*if (XRLeftController != null && XRRightController != null)
             return Input.GetMouseButtonDown(0) || XRLeftController.activateAction.action.WasPressedThisFrame() || XRRightController.activateAction.action.WasPressedThisFrame();
-        return Input.GetMouseButtonDown(0) || Input.GetMouseButton(0);
+        return Input.GetMouseButtonDown(0) || Input.GetMouseButton(0);*/
     }
 }
