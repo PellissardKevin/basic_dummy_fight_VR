@@ -27,9 +27,15 @@ public class message : MonoBehaviour
         {
             Debug.Log("Hello, activate action triggered!");
         }
+        
+        draw_ray(LeftController);
+        draw_ray(RightController);
+    }
 
-        Vector3 Origin = LeftController.position;
-        Vector3 Direction = LeftController.forward;
+    void draw_ray(Transform controller)
+    {
+        Vector3 Origin = controller.position;
+        Vector3 Direction = controller.forward;
 
         Debug.DrawRay (Origin, Direction*10, Color.green);
         if (Physics.Raycast(Origin, Direction, out RaycastHit hit, 10))
