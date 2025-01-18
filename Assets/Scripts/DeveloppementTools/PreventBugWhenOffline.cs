@@ -9,6 +9,7 @@ public class PreventBugWhenOffline : MonoBehaviour
     public PupitreScript pupitreScript;
     public FieldManager FieldManagerScript;
     public FieldManager FieldManagerScriptOponent;
+    public Position_Sender position_SenderScript;
 
     void Awake()
     {
@@ -25,6 +26,7 @@ public class PreventBugWhenOffline : MonoBehaviour
             pupitre_debug_draw(pupitreScript);
             DebugDraw();
             DebugDraw2();
+            position_SenderScript.enabled = false;
 
         }
     }

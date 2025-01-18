@@ -6,7 +6,6 @@ using UnityEngine.SpatialTracking;
 
 public class XRManagerScript : MonoBehaviour
 {
-    public GameObject Player;
     public GameObject AddScene2Object;
 
     public GameObject XR_Rig;
@@ -28,13 +27,11 @@ public class XRManagerScript : MonoBehaviour
             }
             else
             {
-                //Player.SetActive(true);
                 Debug.Log("No VR headset detected.");
             }
         }
         else
         {
-            //Player.SetActive(true);
             Debug.Log("XR is not initialized.");
             deactivateXR();
         }
