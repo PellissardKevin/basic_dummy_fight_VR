@@ -26,7 +26,7 @@ public class message : MonoBehaviour
         if (LeftControllerscript.selectAction.action.WasPressedThisFrame())
         {
             Debug.Log("Hello, select action triggered!");
-            DetectCardXr(LeftController, LeftControllerscript);
+            //DetectCardXr(LeftController, LeftControllerscript);
         }
 
         // Check if the activate action is triggered

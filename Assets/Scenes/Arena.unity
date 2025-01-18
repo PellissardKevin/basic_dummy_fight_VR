@@ -3268,8 +3268,7 @@ MonoBehaviour:
   gameSocketScript: {fileID: 2125840724}
   pupitreScript: {fileID: 2041984393}
   TypeManagerScript: {fileID: 2118232665}
-  XRLeftController: {fileID: 2088334860}
-  XRRightController: {fileID: 328587688}
+  XRControllerScript: {fileID: 328587688}
   debugobj: {fileID: 0}
   Board: {fileID: 1369325587}
   Slots:
@@ -3282,7 +3281,6 @@ MonoBehaviour:
   - {fileID: 67148831}
   - {fileID: 334867564}
   is_VR: 1
-  is_left: 0
 --- !u!1001 &1428247059
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -4428,7 +4426,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!114 &1777163523
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5299,8 +5297,7 @@ MonoBehaviour:
   gameSocketScript: {fileID: 2125840724}
   pupitreScript: {fileID: 2041984393}
   TypeManagerScript: {fileID: 2118232665}
-  XRLeftController: {fileID: 2088334860}
-  XRRightController: {fileID: 328587688}
+  XRControllerScript: {fileID: 2088334860}
   debugobj: {fileID: 0}
   Board: {fileID: 1369325587}
   Slots:
@@ -5313,7 +5310,6 @@ MonoBehaviour:
   - {fileID: 67148831}
   - {fileID: 334867564}
   is_VR: 1
-  is_left: 1
 --- !u!1 &2095403556
 GameObject:
   m_ObjectHideFlags: 0

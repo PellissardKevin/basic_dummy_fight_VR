@@ -11,10 +11,7 @@ public class PupitreCardInteraction : MonoBehaviour
     public PupitreScript pupitreScript;
     public CardTypesManagerScript TypeManagerScript;
 
-    public ActionBasedController XRLeftController;
-    public ActionBasedController XRRightController;
-    private Transform XRLeftTransform;
-    private Transform XRRightTransform;
+    public ActionBasedController XRControllerScript;
 
     public Text debugobj;
 
@@ -27,39 +24,25 @@ public class PupitreCardInteraction : MonoBehaviour
     Vector3 originalPosition;
     string drag_phase;
     public bool is_VR = false;
-    public bool is_left = false;
 
     void Start()
     {
-        XRLeftTransform = XRLeftController.gameObject.transform;
-        XRRightTransform = XRRightController.gameObject.transform;
+
     }
 
     void Update()
     {
         if (isDragging)
         {
-            if (!is_VR)
-                UpdateDragging(null, null);
-            else
-            {
-                UpdateDragging(XRLeftTransform, XRLeftController);
-                UpdateDragging(XRRightTransform, XRRightController);
-            }
+            UpdateDragging();
         }
         else
         {
-            if (!is_VR)
-                DetectDragging(null, null);
-            else
-            {
-                DetectDragging(XRLeftTransform, XRLeftController);
-                DetectDragging(XRRightTransform, XRRightController);
-            }
+            DetectDragging();
         }
     }
 
-    private void UpdateDragging(Transform controller, ActionBasedController Controllerscript)
+    private void UpdateDragging()
     {
         int previous_slot = slot_number;
         if (!DetectAction())
@@ -74,8 +57,8 @@ public class PupitreCardInteraction : MonoBehaviour
 
         if (is_VR)
         {
-            Origin = controller.position;
-            Direction = controller.forward;
+            Origin = gameObject.transform.position;
+            Direction = gameObject.transform.forward;
         }
         else
         {
@@ -110,7 +93,7 @@ public class PupitreCardInteraction : MonoBehaviour
         }
     }
 
-    private void DetectDragging(Transform controller, ActionBasedController Controllerscript)
+    private void DetectDragging()
     {
         if (DetectAction())
         {
@@ -119,8 +102,8 @@ public class PupitreCardInteraction : MonoBehaviour
 
             if (is_VR)
             {
-                Origin = controller.position;
-                Direction = controller.forward;
+                Origin = gameObject.transform.position;
+                Direction = gameObject.transform.forward;
             }
             else
             {
@@ -297,7 +280,7 @@ public class PupitreCardInteraction : MonoBehaviour
             return false;
         string type = TypeManagerScript.GetType1FromID(card_id);
         string phase = gameSocketScript.current_phase;
-        Debug.Log($"can_move_card: {card_id} in slot {slot_index} on phase {phase} type {type}");
+        //Debug.Log($"can_move_card: {card_id} in slot {slot_index} on phase {phase} type {type}");
 
         if (phase == "Action" && slot_index == 6 && type == "Action") //card action can only be played in the action slot an
             return true;
@@ -378,12 +361,11 @@ public class PupitreCardInteraction : MonoBehaviour
     {
         if (is_VR)
         {
-            if (is_left)
-                return XRLeftController.activateAction.action.WasPressedThisFrame();
-            else
-                return XRRightController.activateAction.action.WasPressedThisFrame();
+            return XRControllerScript.activateAction.action.IsPressed();
         }
         else
+        {
             return Input.GetMouseButton(0);
+        }
     }
 }
