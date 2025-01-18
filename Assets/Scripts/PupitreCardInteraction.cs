@@ -41,8 +41,6 @@ public class PupitreCardInteraction : MonoBehaviour
         {
             DetectDragging();
         }
-        if (is_VR)
-            draw_ray();
     }
 
     private void UpdateDragging()
@@ -369,26 +367,6 @@ public class PupitreCardInteraction : MonoBehaviour
         else
         {
             return Input.GetMouseButton(0);
-        }
-    }
-
-    void draw_ray()
-    {
-        Vector3 Origin = gameObject.transform.position;
-        Vector3 Direction = gameObject.transform.forward;
-
-        if (Physics.Raycast(Origin, Direction, out RaycastHit hit, 10))
-        {
-            // Update the Line Renderer to show the ray
-            lineRenderer.SetPosition(0, Origin);       // Start of the ray
-            lineRenderer.SetPosition(1, hit.point);       // End at the hit point
-
-        }
-        else
-        {
-            // If no hit, draw the ray to its maximum length
-            lineRenderer.SetPosition(0, Origin);
-            lineRenderer.SetPosition(1, Origin + Direction * 10);
         }
     }
 }
