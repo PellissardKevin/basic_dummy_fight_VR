@@ -479,6 +479,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: HUDPlayer
       objectReference: {fileID: 0}
+    - target: {fileID: 511136377161990112, guid: 197f73a43ecd66442b86aaeba8cfa9ad, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 8086562613024208170, guid: 197f73a43ecd66442b86aaeba8cfa9ad, type: 3}
       propertyPath: m_Pivot.x
       value: 0
@@ -3823,7 +3827,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!114 &1409840617
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3838,6 +3842,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Player: {fileID: 552274111}
   AddScene2Object: {fileID: 808382688}
+  PupitreInteractionScript: {fileID: 2075724557}
 --- !u!4 &1409840618
 Transform:
   m_ObjectHideFlags: 0
@@ -5611,7 +5616,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &1777163523
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -6379,6 +6384,17 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 433404, guid: 5cd8c9e8157360648bf43e9188816395, type: 3}
   m_PrefabInstance: {fileID: 2063274862}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &2075724557 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 1912682374203734715, guid: 374ecb2a486b84b43a25aca01f3e07d4, type: 3}
+  m_PrefabInstance: {fileID: 8428505252218048822}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aa20e2d13a79e134fac2d83a4e631d0f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &2086975971
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -6836,12 +6852,16 @@ PrefabInstance:
       objectReference: {fileID: 595934890}
     - target: {fileID: 1912682374203734715, guid: 374ecb2a486b84b43a25aca01f3e07d4, type: 3}
       propertyPath: m_Enabled
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 1912682374203734715, guid: 374ecb2a486b84b43a25aca01f3e07d4, type: 3}
       propertyPath: GameSocketScript
       value: 
       objectReference: {fileID: 2125840724}
+    - target: {fileID: 1912682374203734715, guid: 374ecb2a486b84b43a25aca01f3e07d4, type: 3}
+      propertyPath: XRLeftController
+      value: 
+      objectReference: {fileID: 2088334860}
     - target: {fileID: 1912682374203734715, guid: 374ecb2a486b84b43a25aca01f3e07d4, type: 3}
       propertyPath: gameSocketScript
       value: 
@@ -6850,6 +6870,10 @@ PrefabInstance:
       propertyPath: TypeManagerScript
       value: 
       objectReference: {fileID: 2118232665}
+    - target: {fileID: 1912682374203734715, guid: 374ecb2a486b84b43a25aca01f3e07d4, type: 3}
+      propertyPath: XRRightController
+      value: 
+      objectReference: {fileID: 328587688}
     - target: {fileID: 2127677390976793294, guid: 374ecb2a486b84b43a25aca01f3e07d4, type: 3}
       propertyPath: m_LocalPosition.z
       value: -0.008

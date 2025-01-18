@@ -17,8 +17,6 @@ public class GameSocketScript : MonoBehaviour
     public FieldManager FieldManagerPlayer;
     public FieldManager FieldManagerOponent;
 
-    public PC_Card_Interaction Card_Interaction_Script;
-
     public Text PhaseText;
     public GameObject opponent_player;
     public string current_phase = "Draw";

@@ -39,7 +39,7 @@ public class PupitreCardInteraction : MonoBehaviour
     {
         if (isDragging)
         {
-            if (is_VR)
+            if (!is_VR)
                 UpdateDragging(null, null);
             else
             {
@@ -49,7 +49,7 @@ public class PupitreCardInteraction : MonoBehaviour
         }
         else
         {
-            if (is_VR)
+            if (!is_VR)
                 DetectDragging(null, null);
             else
             {
@@ -64,6 +64,7 @@ public class PupitreCardInteraction : MonoBehaviour
         int previous_slot = slot_number;
         if (!DetectAction())
         {
+            Debug.Log("Stop dragging detec action false");
             StopDragging();
             return;
         }
@@ -378,6 +379,7 @@ public class PupitreCardInteraction : MonoBehaviour
     {
         if (is_VR)
         {
+            Debug.Log("is_VR");
             if (is_left && isDragging)
                 return XRLeftController.activateAction.action.WasPressedThisFrame();
             if (!is_left && isDragging)
@@ -385,7 +387,7 @@ public class PupitreCardInteraction : MonoBehaviour
             return XRLeftController.activateAction.action.WasPressedThisFrame() || XRRightController.activateAction.action.WasPressedThisFrame();
         }
         else
-            return Input.GetMouseButtonDown(0);
+            return Input.GetMouseButton(0);
         /*if (XRLeftController != null && XRRightController != null)
             return Input.GetMouseButtonDown(0) || XRLeftController.activateAction.action.WasPressedThisFrame() || XRRightController.activateAction.action.WasPressedThisFrame();
         return Input.GetMouseButtonDown(0) || Input.GetMouseButton(0);*/
