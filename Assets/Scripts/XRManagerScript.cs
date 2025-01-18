@@ -8,7 +8,6 @@ public class XRManagerScript : MonoBehaviour
 {
     public GameObject Player;
     public GameObject AddScene2Object;
-    public PupitreCardInteraction PupitreInteractionScript;
 
     public GameObject XR_Rig;
     public GameObject leftHand;
@@ -25,21 +24,18 @@ public class XRManagerScript : MonoBehaviour
             if (XRGeneralSettings.Instance.Manager.activeLoader != null)
             {
                 Debug.Log("VR headset is present.");
-                AddScene2Object.SetActive(true);
-                PupitreInteractionScript.is_VR = true;
+                //AddScene2Object.SetActive(true);
             }
             else
             {
                 //Player.SetActive(true);
                 Debug.Log("No VR headset detected.");
-                PupitreInteractionScript.is_VR = true;
             }
         }
         else
         {
             //Player.SetActive(true);
             Debug.Log("XR is not initialized.");
-            PupitreInteractionScript.is_VR = false;
             deactivateXR();
         }
     }

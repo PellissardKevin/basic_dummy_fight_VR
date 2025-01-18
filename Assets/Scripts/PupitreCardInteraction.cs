@@ -27,7 +27,7 @@ public class PupitreCardInteraction : MonoBehaviour
     Vector3 originalPosition;
     string drag_phase;
     public bool is_VR = false;
-    bool is_left = false;
+    public bool is_left = false;
 
     void Start()
     {
@@ -135,7 +135,6 @@ public class PupitreCardInteraction : MonoBehaviour
                 {
                     if (hit.collider.gameObject == obj)
                     {
-                        is_left = Controllerscript == XRLeftController;
                         StartDragging(obj);
                         break;
                     }
@@ -379,17 +378,12 @@ public class PupitreCardInteraction : MonoBehaviour
     {
         if (is_VR)
         {
-            Debug.Log("is_VR");
-            if (is_left && isDragging)
+            if (is_left)
                 return XRLeftController.activateAction.action.WasPressedThisFrame();
-            if (!is_left && isDragging)
+            else
                 return XRRightController.activateAction.action.WasPressedThisFrame();
-            return XRLeftController.activateAction.action.WasPressedThisFrame() || XRRightController.activateAction.action.WasPressedThisFrame();
         }
         else
             return Input.GetMouseButton(0);
-        /*if (XRLeftController != null && XRRightController != null)
-            return Input.GetMouseButtonDown(0) || XRLeftController.activateAction.action.WasPressedThisFrame() || XRRightController.activateAction.action.WasPressedThisFrame();
-        return Input.GetMouseButtonDown(0) || Input.GetMouseButton(0);*/
     }
 }

@@ -57,9 +57,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: aa20e2d13a79e134fac2d83a4e631d0f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  GameSocketScript: {fileID: 0}
+  gameSocketScript: {fileID: 0}
   pupitreScript: {fileID: 1808782147124396339}
   TypeManagerScript: {fileID: 0}
+  XRLeftController: {fileID: 0}
+  XRRightController: {fileID: 0}
   debugobj: {fileID: 0}
   Board: {fileID: 8870658189406654428}
   Slots:
@@ -71,6 +73,8 @@ MonoBehaviour:
   - {fileID: 1351729697288802248}
   - {fileID: 1350882966594604723}
   - {fileID: 4089530617244972726}
+  is_VR: 0
+  is_left: 0
 --- !u!114 &1808782147124396339
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -85,6 +89,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   deck_cards: []
   hand_cards: []
+  trash_cards: []
   board_cards:
   - {fileID: 0}
   - {fileID: 0}
@@ -104,6 +109,7 @@ MonoBehaviour:
   - {fileID: 4000788298876027824}
   - {fileID: 4033155827061359307}
   board: {fileID: 6912958168299199569}
+  trash: {fileID: 0}
   card_prefab: {fileID: 1764238678419584102, guid: 49d5cfe5ac56f39419296425532587c2, type: 3}
   textureManager: {fileID: 0}
 --- !u!1 &996902768234906284
@@ -2274,8 +2280,8 @@ Transform:
   - {fileID: 4619716383177683604}
   - {fileID: 1782855996035143787}
   - {fileID: 5633206058689316970}
-  - {fileID: 2127677390976793294}
   - {fileID: 4033155827061359307}
+  - {fileID: 2127677390976793294}
   - {fileID: 8319471457633764172}
   m_Father: {fileID: 122657888701224082}
   m_LocalEulerAnglesHint: {x: 61, y: 0, z: 0}
