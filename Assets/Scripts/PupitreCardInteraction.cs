@@ -48,7 +48,7 @@ public class PupitreCardInteraction : MonoBehaviour
         int previous_slot = slot_number;
         if (!DetectAction())
         {
-            Debug.Log("Stop dragging detec action false");
+            //Debug.Log("Stop dragging detec action false");
             StopDragging();
             return;
         }
@@ -134,7 +134,7 @@ public class PupitreCardInteraction : MonoBehaviour
         originalPosition = obj.transform.position;
         drag_phase = gameSocketScript.current_phase;
         set_effects(draggedObject.name.Substring(0, 3));
-        Debug.Log($"Start dragging {obj.name}");
+        //Debug.Log($"Start dragging {obj.name}");
     }
 
     private void StopDragging()
@@ -144,7 +144,7 @@ public class PupitreCardInteraction : MonoBehaviour
             draggedObject.transform.position = originalPosition;
         draggedObject = null;
         set_effects(null);
-        Debug.Log("Stop dragging");
+        //Debug.Log("Stop dragging");
     }
 
     private bool check_if_played()
@@ -167,109 +167,6 @@ public class PupitreCardInteraction : MonoBehaviour
             Debug.Log("SocketScript is null");
     }
 
-    public void Test1()
-    {
-        debugobj.text = "Test1";
-        foreach(GameObject card in pupitreScript.hand_cards)
-        {
-            string card_id = card.name.Substring(0, 3);
-            string card_type = TypeManagerScript.GetType1FromID(card_id);
-            if(card_type == "Equipement")
-            {
-                Debug.Log($"Test1: Equipement card found: {card_id}");
-                MoveCardToBoard(card_id, 0);
-                return;
-            }
-        }
-        Debug.Log("Test1: No Equipement card found");
-        debugobj.text = "No Equipement card found";
-    }
-    public void Test2()
-    {
-        debugobj.text = "Test2";
-        foreach(GameObject card in pupitreScript.hand_cards)
-        {
-            string card_id = card.name.Substring(0, 3);
-            string card_type = TypeManagerScript.GetType1FromID(card_id);
-            if(card_type != "Equipement")
-            {
-                Debug.Log($"Test2: Non Equipement card found: {card_id}");
-                MoveCardToBoard(card_id, 3);
-                return;
-            }
-        }
-        Debug.Log("Test2: No wrong card found");
-        debugobj.text = "No wrong card found";
-    }
-    public void Test3()
-    {
-        debugobj.text = "Test3";
-        foreach(GameObject card in pupitreScript.hand_cards)
-        {
-            string card_id = card.name.Substring(0, 3);
-            string card_type = TypeManagerScript.GetType1FromID(card_id);
-            if(card_type == "Trap")
-            {
-                Debug.Log($"Test3: Trap card found: {card_id}");
-                MoveCardToBoard(card_id, 4);
-                return;
-            }
-        }
-        Debug.Log("Test3: No Trap card found");
-        debugobj.text = "No Trap card found";
-    }
-    public void Test4()
-    {
-        debugobj.text = "Test4";
-        foreach(GameObject card in pupitreScript.hand_cards)
-        {
-            string card_id = card.name.Substring(0, 3);
-            string card_type = TypeManagerScript.GetType1FromID(card_id);
-            if(card_type != "Trap")
-            {
-                Debug.Log($"Test4: Non Trap card found: {card_id}");
-                MoveCardToBoard(card_id, 4);
-                return;
-            }
-        }
-        Debug.Log("Test4: No wrong card found");
-        debugobj.text = "No wrong card found";
-    }
-    public void Test5()
-    {
-        debugobj.text = "Test5";
-        foreach(GameObject card in pupitreScript.hand_cards)
-        {
-            string card_id = card.name.Substring(0, 3);
-            string card_type = TypeManagerScript.GetType1FromID(card_id);
-            if(card_type == "Action")
-            {
-                Debug.Log($"Test5: Action card found: {card_id}");
-                MoveCardToBoard(card_id, 6);
-                return;
-            }
-        }
-        Debug.Log("Test5: No Action card found");
-        debugobj.text = "No Action card found";
-    }
-    public void Test6()
-    {
-        debugobj.text = "Test6";
-        foreach(GameObject card in pupitreScript.hand_cards)
-        {
-            string card_id = card.name.Substring(0, 3);
-            string card_type = TypeManagerScript.GetType1FromID(card_id);
-            if(card_type != "Action")
-            {
-                Debug.Log($"Test6: Non Action card found: {card_id}");
-                MoveCardToBoard(card_id, 2);
-                return;
-            }
-        }
-        Debug.Log("Test6: No wrong card found");
-        debugobj.text = "No wrong card found";
-    }
-
     private bool IsSlotAvailable(int slot_index)
     {
         return (pupitreScript.board_cards[slot_index] == null);
@@ -289,7 +186,7 @@ public class PupitreCardInteraction : MonoBehaviour
             return false;                                                   //only non action cards on phase preparation should be left
         if (slot_index < 3 && type == "Equipement") //equipement cards can only be played in the first 3 slots
             return true;
-        if (slot_index > 2 && type == "Trap")    //trap cards can only be played in the last 3 slots
+        if (slot_index > 2 && (type == "Trap" || type == "Piège"))    //trap cards can only be played in the last 3 slots
             return true;
 
         return false;   //rest is invalid
@@ -316,10 +213,11 @@ public class PupitreCardInteraction : MonoBehaviour
         }
         string type = TypeManagerScript.GetType1FromID(card_id);
         string phase = gameSocketScript.current_phase;
+        Debug.Log($"Setting effects for card {card_id} type {type} phase {phase}");
 
         for (int i = 0; i < Slots.Length; i++)
         {
-            Debug.Log($"Checking slot {i}");
+            //Debug.Log($"Checking slot {i}");
             if (i == 7)
             {
                 if (phase == "Discard")
