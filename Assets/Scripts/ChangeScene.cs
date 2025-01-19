@@ -12,15 +12,23 @@ public class ChangeScene : MonoBehaviour
 
     public void SwitchToGame()
     {
-        SceneManager.UnloadSceneAsync("MenuRoomVR_Kevin");
-        UnityEngine.SceneManagement.SceneManager.LoadScene("Arena", LoadSceneMode.Additive);
+        if (SceneManager.GetSceneByName("MenuRoomVR_Kevin").isLoaded)
+            SceneManager.UnloadSceneAsync("MenuRoomVR_Kevin");
+
+        if (!SceneManager.GetSceneByName("Arena").isLoaded)
+            SceneManager.LoadScene("Arena", LoadSceneMode.Additive);
     }
 
     public void BackToMenu()
     {
-        SceneManager.UnloadSceneAsync("Arena");
-        SceneManager.UnloadSceneAsync("Arena2");
-        UnityEngine.SceneManagement.SceneManager.LoadScene("MenuRoomVR_Kevin", LoadSceneMode.Additive);
+        if (SceneManager.GetSceneByName("Arena").isLoaded)
+            SceneManager.UnloadSceneAsync("Arena");
+
+        if (SceneManager.GetSceneByName("Arena2").isLoaded)
+            SceneManager.UnloadSceneAsync("Arena2");
+
+        if (!SceneManager.GetSceneByName("MenuRoomVR_Kevin").isLoaded)
+            SceneManager.LoadScene("MenuRoomVR_Kevin", LoadSceneMode.Additive);
     }
 
 
