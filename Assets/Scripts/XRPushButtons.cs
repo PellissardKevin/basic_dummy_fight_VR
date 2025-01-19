@@ -17,7 +17,7 @@ public class XRPushButtons : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (XRControllerScript.activateAction.action.IsPressed())
+        if (XRControllerScript.activateAction.action.WasPressedThisFrame())
         {
             PushButton();
         }

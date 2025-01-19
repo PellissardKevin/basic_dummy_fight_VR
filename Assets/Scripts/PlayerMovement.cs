@@ -37,7 +37,7 @@ public class PlayerMovement : MonoBehaviour
         cameraRight.Normalize();
 
         Vector3 move = (cameraForward * moveZ + cameraRight * moveX) * speed;
-        animator.SetFloat("Speed", move.magnitude);
+        //animator.SetFloat("Speed", move.magnitude);
 
         Vector3 newPosition = transform.position + move * Time.deltaTime;
         //Vector3 newPosition = rb.position + move * Time.deltaTime;
@@ -66,8 +66,8 @@ public class PlayerMovement : MonoBehaviour
     {
         Vector3 rayOrigin = transform.position + Vector3.up * 0f; // Raise the origin slightly
         isGrounded = Physics.Raycast(rayOrigin, Vector3.down, 0.1f);
-        if (isGrounded && animator.GetBool("Jump"))
-            animator.SetBool("Jump", false);
+        //if (isGrounded && animator.GetBool("Jump"))
+            //animator.SetBool("Jump", false);
         //animator.SetFloat("JumpHeight", rb.velocity.y);
     }
 }
