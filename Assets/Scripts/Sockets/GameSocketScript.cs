@@ -55,7 +55,7 @@ public class GameSocketScript : MonoBehaviour
             FieldManagerOponent.PlaceCardOnBoard(id, slot);
     }
 
-    public void next_phase(string my_cards, string oponent_cards, string cards_to_reveal, string phase, string timer)
+    public void next_phase(string my_cards, string oponent_cards, string cards_to_reveal, string own_reveal, string phase, string timer)
     {
         Debug.Log($"Next {my_cards}, {oponent_cards}, {phase}, {timer}");
         timerScript.ResetTimer(float.Parse(timer, CultureInfo.InvariantCulture));
@@ -72,12 +72,15 @@ public class GameSocketScript : MonoBehaviour
         if (phase == "Draw")
             Pick_Cards(my_cards);
         if (phase == "Reveal")
-            RevealCards(cards_to_reveal);
+        {
+            RevealCards(cards_to_reveal, false);
+            RevealCards(own_reveal, true);
+        }
 
         phase_ended = false;
     }
 
-    public void RevealCards(string cards_to_reveal)
+    public void RevealCards(string cards_to_reveal, bool isPlayer)
     {
         //format "[[\"5\", 2, [[\"type\", 2, \"target\" ], [\"type\", 2, \"target\" ]]], [\"3\", 5, [[\"type\", 2, \"target\" ]]], [\"1\", 3, []]]"
         var listOfCards = Newtonsoft.Json.JsonConvert.DeserializeObject<List<List<object>>>(cards_to_reveal);
@@ -96,7 +99,7 @@ public class GameSocketScript : MonoBehaviour
                 Debug.Log($"Type: {type}, Value: {value}, Target: {target}");
                 DummyDisplay.CreateFloatingText(type, value, target == "self");
             }
-            FieldManagerOponent.PlaceCardOnBoard(card_id, card_slot);
+            Reveal_Card(card_id, card_slot, isPlayer);
             Debug.Log($"Revealing card: {card_id} in slot {card_slot} with effects: {effects}");
         }
     }
@@ -178,7 +181,7 @@ public class GameSocketScript : MonoBehaviour
     public void test_reveal2()
     {
         //RevealCards2("[[\"5\", 2, [\"effect1\", \"effect2\"]], [\"3\", 5, [\"effect1\"]], [\"1\", 3, []]]");
-        RevealCards("[[\"5\", 2, [[\"type\", 2, \"target\" ], [\"type\", 2, \"target\" ]]], [\"3\", 5, [[\"type\", 2, \"target\" ]]], [\"1\", 3, []]]");
+        RevealCards("[[\"5\", 2, [[\"type\", 2, \"target\" ], [\"type\", 2, \"target\" ]]], [\"3\", 5, [[\"type\", 2, \"target\" ]]], [\"1\", 3, []]]", true);
     }
 
 }

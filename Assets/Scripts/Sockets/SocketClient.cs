@@ -239,11 +239,15 @@ public class SocketClient : MonoBehaviour
             oponent_cards = parse_response(data, "oponent_cards");
 
         string cards_to_reveal = "";
+        string own_reveal = "";
         if (phase == "Reveal")
+        {
             cards_to_reveal = parse_response(data, "cards_to_reveal");
+            own_reveal = parse_response(data, "own_reveal");
+        }
 
         Debug.Log($"Next {my_cards}, {oponent_cards}, {phase}, {timer}");
-        functionQueue.Enqueue(() => { GameScript.next_phase(my_cards, oponent_cards, cards_to_reveal, phase, timer); });
+        functionQueue.Enqueue(() => { GameScript.next_phase(my_cards, oponent_cards, cards_to_reveal, own_reveal, phase, timer); });
     }
 
     private void phase_validation_accepted(SocketIOClient.SocketIOResponse data)
