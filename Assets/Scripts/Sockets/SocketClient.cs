@@ -232,22 +232,32 @@ public class SocketClient : MonoBehaviour
         string phase = parse_response(data, "phase");
         string timer = parse_response(data, "timer");
         string my_cards = "";
+        string oponent_cards = "";
+        string cards_to_reveal = "";
+        string own_reveal = "";
+        string game_status = "";
+        string your_damage = "";
+        string oponent_damage = "";
+
         if (phase == "Draw")
             my_cards = parse_response(data, "your_cards");
-        string oponent_cards = "";
         if (false)
             oponent_cards = parse_response(data, "oponent_cards");
 
-        string cards_to_reveal = "";
-        string own_reveal = "";
         if (phase == "Reveal")
         {
             cards_to_reveal = parse_response(data, "cards_to_reveal");
             own_reveal = parse_response(data, "own_reveal");
         }
+        else if (phase == "Resolve")
+        {
+            game_status = parse_response(data, "game_status");
+            your_damage = parse_response(data, "your_damage");
+            oponent_damage = parse_response(data, "oponent_damage");
+        }
 
         Debug.Log($"Next {my_cards}, {oponent_cards}, {phase}, {timer}");
-        functionQueue.Enqueue(() => { GameScript.next_phase(my_cards, oponent_cards, cards_to_reveal, own_reveal, phase, timer); });
+        functionQueue.Enqueue(() => { GameScript.next_phase(my_cards, oponent_cards, cards_to_reveal, own_reveal, phase, timer, game_status, your_damage, oponent_damage); });
     }
 
     private void phase_validation_accepted(SocketIOClient.SocketIOResponse data)

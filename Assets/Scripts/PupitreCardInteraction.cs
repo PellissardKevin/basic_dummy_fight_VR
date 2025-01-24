@@ -149,7 +149,7 @@ public class PupitreCardInteraction : MonoBehaviour
 
     private bool check_if_played()
     {
-        Debug.Log("Check if played");
+        //Debug.Log("Check if played");
         if (slot_number != -1)
             if (can_move_card(draggedObject.name.Substring(0, 3), slot_number))
             {
@@ -200,7 +200,8 @@ public class PupitreCardInteraction : MonoBehaviour
             Validate_Card(card_id, slot_index, gameSocketScript.current_phase);
         }
         else
-            Debug.Log($"Slot {slot_index} is not available");
+            //Debug.Log($"Slot {slot_index} is not available");
+        {}
     }
 
     private void set_effects(string card_id)
@@ -213,7 +214,7 @@ public class PupitreCardInteraction : MonoBehaviour
         }
         string type = TypeManagerScript.GetType1FromID(card_id);
         string phase = gameSocketScript.current_phase;
-        Debug.Log($"Setting effects for card {card_id} type {type} phase {phase}");
+        //Debug.Log($"Setting effects for card {card_id} type {type} phase {phase}");
 
         for (int i = 0; i < Slots.Length; i++)
         {
@@ -229,12 +230,12 @@ public class PupitreCardInteraction : MonoBehaviour
             if (can_move_card(card_id, i))
             {
                 authorize(Slots[i]);
-                Debug.Log($"Slot {i} is available");
+                //Debug.Log($"Slot {i} is available");
             }
             else
             {
                 prevent(Slots[i]);
-                Debug.Log($"Slot {i} is not available");
+                //Debug.Log($"Slot {i} is not available");
             }
         }
     }

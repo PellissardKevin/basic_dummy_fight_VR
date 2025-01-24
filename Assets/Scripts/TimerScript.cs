@@ -46,8 +46,7 @@ public class TimerScript : MonoBehaviour
 
     public void ValidatePhase()
     {
-        // Perform your action here
-        Debug.Log("Timer reached zero, action performed!");
+        //Debug.Log("Timer reached zero, action performed!");
         actionCalled = true;
         gameSocketScript.end_Phase();
     }

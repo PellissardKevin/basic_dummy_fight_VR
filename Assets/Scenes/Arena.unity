@@ -753,7 +753,7 @@ Transform:
   m_GameObject: {fileID: 230160582}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 2, y: 2, z: 36.420002}
+  m_LocalPosition: {x: -0.049, y: 2, z: 36.420002}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -2144,6 +2144,17 @@ PrefabInstance:
       insertIndex: -1
       addedObject: {fileID: 644517282}
   m_SourcePrefab: {fileID: 100100000, guid: 9e066cea98814aa448c70270a3c60251, type: 3}
+--- !u!114 &579311500 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 4778054775736680373, guid: 99473677536a9844ba1947086bc1ddff, type: 3}
+  m_PrefabInstance: {fileID: 1428247059}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9057c8034bffc1349b5bd9578a0df494, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &595934888
 GameObject:
   m_ObjectHideFlags: 0
@@ -2440,7 +2451,7 @@ Transform:
   m_GameObject: {fileID: 700384764}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 2, y: 2, z: 36.58}
+  m_LocalPosition: {x: 2, y: 2, z: 36.420002}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -4204,10 +4215,6 @@ PrefabInstance:
       propertyPath: Slots.Array.data[7]
       value: 
       objectReference: {fileID: 334867564}
-    - target: {fileID: 4649957622573002601, guid: 99473677536a9844ba1947086bc1ddff, type: 3}
-      propertyPath: m_SlopeLimit
-      value: 60
-      objectReference: {fileID: 0}
     - target: {fileID: 6411733525065484025, guid: 99473677536a9844ba1947086bc1ddff, type: 3}
       propertyPath: m_Name
       value: PlayerXR
@@ -6193,7 +6200,7 @@ Transform:
   m_GameObject: {fileID: 1848667416}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 5, z: 36.61}
+  m_LocalPosition: {x: 0, y: 5, z: 36.420002}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -7066,6 +7073,7 @@ MonoBehaviour:
   DummyDisplay: {fileID: 1705892794}
   PupitreScript: {fileID: 2041984393}
   timerScript: {fileID: 2125840726}
+  WinConditionScript: {fileID: 579311500}
   FieldManagerPlayer: {fileID: 2021825506}
   FieldManagerOponent: {fileID: 38654261}
   PhaseText: {fileID: 2095403558}

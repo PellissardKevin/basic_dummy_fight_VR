@@ -130,11 +130,6 @@ public class FieldManager : MonoBehaviour
             if (card == null)
                 continue;
 
-
-            Debug.Log($"Reducing timer for card {card.name}");
-            Debug.Log($"{card.transform.Find("TimerCanvas").gameObject}");
-            Debug.Log($"{card.transform.Find("TimerCanvas/TimerText").gameObject}");
-
             TMP_Text timerText = card.transform.Find("TimerCanvas/TimerText").GetComponent<TMP_Text>();
             int timer = int.Parse(timerText.text);
             timer--;

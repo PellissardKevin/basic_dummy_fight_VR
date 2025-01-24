@@ -13,6 +13,7 @@ public class GameSocketScript : MonoBehaviour
     public UIDummyDamageDisplay DummyDisplay;
     public PupitreScript PupitreScript;
     public TimerScript timerScript;
+    public WinCondition WinConditionScript;
 
     public FieldManager FieldManagerPlayer;
     public FieldManager FieldManagerOponent;
@@ -55,7 +56,7 @@ public class GameSocketScript : MonoBehaviour
             FieldManagerOponent.PlaceCardOnBoard(id, slot);
     }
 
-    public void next_phase(string my_cards, string oponent_cards, string cards_to_reveal, string own_reveal, string phase, string timer)
+    public void next_phase(string my_cards, string oponent_cards, string cards_to_reveal, string own_reveal, string phase, string timer, string game_status, string your_damage, string oponent_damage)
     {
         Debug.Log($"Next {my_cards}, {oponent_cards}, {phase}, {timer}");
         timerScript.ResetTimer(float.Parse(timer, CultureInfo.InvariantCulture));
@@ -64,7 +65,7 @@ public class GameSocketScript : MonoBehaviour
         current_phase = phase;
         PhaseText.text = phase;
 
-        if (phase == "Preparation")
+        if (phase == "Preparation" || phase == "Action" || phase == "Discard")
             TurnEffect.color = new Color(0, 1, 0);
         else
             TurnEffect.color = new Color(1, 0, 0);
@@ -82,7 +83,14 @@ public class GameSocketScript : MonoBehaviour
             FieldManagerPlayer.ReduceCardsTimer();
             FieldManagerOponent.ReduceCardsTimer();
         }
+        if (phase == "Resolve")
+        {
+            Debug.Log($"Game Status: {game_status}");
+            Debug.Log($"Your Damage: {your_damage}");
+            Debug.Log($"Oponent Damage: {oponent_damage}");
+        }
 
+        WinConditionScript.test_victory(game_status);
         phase_ended = false;
     }
 
@@ -102,11 +110,11 @@ public class GameSocketScript : MonoBehaviour
                 string type = effectList[0].ToString();
                 int value = Convert.ToInt32(effectList[1]);
                 string target = effectList[2].ToString();
-                Debug.Log($"Type: {type}, Value: {value}, Target: {target}");
+                //Debug.Log($"Type: {type}, Value: {value}, Target: {target}");
                 DummyDisplay.CreateFloatingText(type, value, target == "self");
             }
             Reveal_Card(card_id, card_slot, isPlayer);
-            Debug.Log($"Revealing card: {card_id} in slot {card_slot} with effects: {effects}");
+            //Debug.Log($"Revealing card: {card_id} in slot {card_slot} with effects: {effects}");
         }
     }
 
@@ -123,19 +131,19 @@ public class GameSocketScript : MonoBehaviour
         if (!phase_ended)
         {
             phase_ended = true;
-            Debug.Log($"Validating Phase {current_phase}");
+            //Debug.Log($"Validating Phase {current_phase}");
             SocketScript.Validate_Cards(new List<string>(), current_phase);
         }
     }
 
     public void phase_validation_accepted()
     {
-        Debug.Log("Accepted");
+        //Debug.Log("Accepted");
     }
 
     public void phase_validation_denied()
     {
-        Debug.Log("Denied");
+        //Debug.Log("Denied");
     }
 
     public void set_player_position(string transformString)
@@ -189,5 +197,7 @@ public class GameSocketScript : MonoBehaviour
         //RevealCards2("[[\"5\", 2, [\"effect1\", \"effect2\"]], [\"3\", 5, [\"effect1\"]], [\"1\", 3, []]]");
         RevealCards("[[\"5\", 2, [[\"type\", 2, \"target\" ], [\"type\", 2, \"target\" ]]], [\"3\", 5, [[\"type\", 2, \"target\" ]]], [\"1\", 3, []]]", true);
     }
+
+
 
 }
