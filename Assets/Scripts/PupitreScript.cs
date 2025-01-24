@@ -1,6 +1,8 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
+using TMPro;
 
 public class PupitreScript : MonoBehaviour
 {
@@ -90,11 +92,13 @@ public class PupitreScript : MonoBehaviour
         foreach (GameObject card in hand_cards)
         {
             float x_offset = (loop_count - (card_count - 1) / 2f) * card_spacing;
-            card.transform.position = new Vector3(
-                hand_spawn_point.position.x + x_offset,
-                hand_spawn_point.position.y + 0.001f * loop_count,
-                hand_spawn_point.position.z
+            card.transform.localPosition = new Vector3(
+                hand_spawn_point.localPosition.x + x_offset,
+                hand_spawn_point.localPosition.y ,
+                hand_spawn_point.localPosition.z - 0.001f * loop_count
             );
+            // Set the card's rotation relative to the board
+            card.transform.localRotation = Quaternion.identity; // Aligns with the parent
             card.transform.rotation = board.rotation;
 
             loop_count++;
@@ -121,6 +125,29 @@ public class PupitreScript : MonoBehaviour
         card.transform.position = trash.position + thickness * trash_cards.Count;
         trash_cards.Add(card);
         AddaptAllCardsPositions();
+    }
+
+    [ContextMenu("Reduce card timer")]
+    public void ReduceCardsTimer()
+    {
+        for (int i = board_cards.Length - 1; i >= 0; i--) // Iterate backwards to safely remove
+        {
+            GameObject card = board_cards[i];
+            if (card == null)
+                continue;
+
+            TMP_Text timerText = card.transform.Find("TimerCanvas/TimerText").GetComponent<TMP_Text>();
+            int timer = int.Parse(timerText.text);
+            timer--;
+
+            if (timer > 0)
+                timerText.text = timer.ToString();
+            else
+            {
+                MoveToTrash(card);
+                board_cards[i] = null; // Nullify the reference in the list
+            }
+        }
     }
 
 }

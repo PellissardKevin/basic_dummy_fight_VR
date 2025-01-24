@@ -76,6 +76,12 @@ public class GameSocketScript : MonoBehaviour
             RevealCards(cards_to_reveal, false);
             RevealCards(own_reveal, true);
         }
+        if (phase == "Action")
+        {
+            PupitreScript.ReduceCardsTimer();
+            FieldManagerPlayer.ReduceCardsTimer();
+            FieldManagerOponent.ReduceCardsTimer();
+        }
 
         phase_ended = false;
     }

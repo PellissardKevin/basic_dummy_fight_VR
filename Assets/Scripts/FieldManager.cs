@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using TMPro;
 
 public class FieldManager : MonoBehaviour
 {
@@ -118,5 +119,37 @@ public class FieldManager : MonoBehaviour
         Destroy(card_to_move);
         #endif
 
+    }
+
+    [ContextMenu("Reduce card timer")]
+    public void ReduceCardsTimer()
+    {
+        for (int i = Board.Length - 1; i >= 0; i--) // Iterate backwards to safely remove
+        {
+            GameObject card = Board[i].transform.GetChild(0).GetChild(0).gameObject;
+            if (card == null)
+                continue;
+
+
+            Debug.Log($"Reducing timer for card {card.name}");
+            Debug.Log($"{card.transform.Find("TimerCanvas").gameObject}");
+            Debug.Log($"{card.transform.Find("TimerCanvas/TimerText").gameObject}");
+
+            TMP_Text timerText = card.transform.Find("TimerCanvas/TimerText").GetComponent<TMP_Text>();
+            int timer = int.Parse(timerText.text);
+            timer--;
+
+            if (timer > 0)
+                timerText.text = timer.ToString();
+            else
+            {
+                Board[i].GetComponent<Animator>().SetTrigger("Close");
+                #if UNITY_EDITOR
+                DestroyImmediate(card);
+                #else
+                Destroy(card);
+                #endif
+            }
+        }
     }
 }
