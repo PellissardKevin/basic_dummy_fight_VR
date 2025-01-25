@@ -3295,6 +3295,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   pairedObject: {fileID: 0}
   symmetryCenter: {x: 0, y: 0, z: 0}
+  ActiveRotation: 1
 --- !u!1 &6517327498963356248
 GameObject:
   m_ObjectHideFlags: 0

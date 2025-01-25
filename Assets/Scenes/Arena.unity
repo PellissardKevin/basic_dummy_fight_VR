@@ -454,6 +454,28 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 197f73a43ecd66442b86aaeba8cfa9ad, type: 3}
+--- !u!114 &96180718 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 437933829039839388, guid: 197f73a43ecd66442b86aaeba8cfa9ad, type: 3}
+  m_PrefabInstance: {fileID: 96180717}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &96180719 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 5890580500486502041, guid: 197f73a43ecd66442b86aaeba8cfa9ad, type: 3}
+  m_PrefabInstance: {fileID: 96180717}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &120595253
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -2818,17 +2840,17 @@ RectTransform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 804400901}
-  m_LocalRotation: {x: -0.45451945, y: 0.54167527, z: -0.54167527, w: -0.45451945}
-  m_LocalPosition: {x: 0, y: 0, z: -0.2}
+  m_LocalRotation: {x: -0.5, y: 0.5, z: -0.5, w: -0.5}
+  m_LocalPosition: {x: 0, y: 0, z: -0.21}
   m_LocalScale: {x: 0.0025, y: 0.0025, z: 0.0025}
   m_ConstrainProportionsScale: 1
   m_Children:
   - {fileID: 8723416707528071278}
   m_Father: {fileID: 1937015490}
-  m_LocalEulerAnglesHint: {x: 90, y: 180, z: -80}
+  m_LocalEulerAnglesHint: {x: 90, y: 180, z: -90}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0.03, y: 0.15}
+  m_AnchoredPosition: {x: -0.0785, y: 0.05}
   m_SizeDelta: {x: 100, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &804400903
@@ -3284,6 +3306,28 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 197f73a43ecd66442b86aaeba8cfa9ad, type: 3}
+--- !u!114 &845870556 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 437933829039839388, guid: 197f73a43ecd66442b86aaeba8cfa9ad, type: 3}
+  m_PrefabInstance: {fileID: 845870555}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &845870557 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 5890580500486502041, guid: 197f73a43ecd66442b86aaeba8cfa9ad, type: 3}
+  m_PrefabInstance: {fileID: 845870555}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &865600826
 GameObject:
   m_ObjectHideFlags: 0
@@ -6998,6 +7042,10 @@ MonoBehaviour:
   PCHealthBar_J2: {fileID: 1088709208}
   VRHealthBar_J1: {fileID: 126438575856260043}
   VRHealthBar_J2: {fileID: 3450499239984286700}
+  PCHealthText_J1: {fileID: 96180719}
+  PCHealthText_J2: {fileID: 96180718}
+  VRHealthText_J1: {fileID: 845870557}
+  VRHealthText_J2: {fileID: 845870556}
   isVR: 0
 --- !u!1 &1868884228
 GameObject:
@@ -7812,6 +7860,7 @@ MonoBehaviour:
   PupitreScript: {fileID: 2041984393}
   timerScript: {fileID: 2125840726}
   WinConditionScript: {fileID: 579311500}
+  HealthManager: {fileID: 1853340763}
   FieldManagerPlayer: {fileID: 2021825506}
   FieldManagerOponent: {fileID: 38654261}
   PhaseText: {fileID: 768797213}

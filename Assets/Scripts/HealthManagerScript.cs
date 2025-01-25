@@ -8,6 +8,12 @@ public class Health
 {
     public float health;
     public float maxHealth;
+
+    public string ToString()
+    {
+        Debug.Log($"to string: {health} / {maxHealth} HP");
+        return $"{health} / {maxHealth} HP";
+    }
 }
 
 public class HealthManagerScript : MonoBehaviour
@@ -18,6 +24,10 @@ public class HealthManagerScript : MonoBehaviour
     public Image PCHealthBar_J2;
     public Image VRHealthBar_J1;
     public Image VRHealthBar_J2;
+    public TMP_Text PCHealthText_J1;
+    public TMP_Text PCHealthText_J2;
+    public TMP_Text VRHealthText_J1;
+    public TMP_Text VRHealthText_J2;
 
     public bool isVR = false;
 
@@ -58,6 +68,28 @@ public class HealthManagerScript : MonoBehaviour
                 VRHealthBar_J2.fillAmount = health / 100f;
             else
                 PCHealthBar_J2.fillAmount = health / 100f;
+        }
+        UpdateHealthText(isPlayer1);
+    }
+
+    public void UpdateHealthText(bool isPlayer1)
+    {
+        int player = isPlayer1 ? 1 : 2;
+        Health health = select_player(player);
+        Debug.Log($"Player health text {health.ToString()}");
+        if (isPlayer1)
+        {
+            if (isVR)
+                VRHealthText_J1.text = health.ToString();
+            else
+                PCHealthText_J1.text = health.ToString();
+        }
+        else
+        {
+            if (isVR)
+                VRHealthText_J2.text = health.ToString();
+            else
+                PCHealthText_J2.text = health.ToString();
         }
     }
 
