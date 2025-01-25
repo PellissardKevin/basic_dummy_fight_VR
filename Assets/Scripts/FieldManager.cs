@@ -27,6 +27,7 @@ public class FieldManager : MonoBehaviour
         for (int i = 0; i < quantity; i++)
         {
             GameObject card = Instantiate(card_prefab, deck_spawn_point.position, deck_spawn_point.rotation);
+            card.transform.SetParent(gameObject.transform);
             Vector3 offset = deck_spawn_point.gameObject.transform.rotation * (thickness * i);
             card.transform.position = deck_spawn_point.position + offset;
             card.transform.Rotate(0, 180, 0, Space.Self);
@@ -80,7 +81,7 @@ public class FieldManager : MonoBehaviour
             card.transform.position = new Vector3(
                 hand_spawn_point.position.x + x_offset,
                 hand_spawn_point.position.y + y_offset,
-                hand_spawn_point.position.z - (loop_count - card_count / 2) * 0.001f
+                hand_spawn_point.position.z - (loop_count - card_count / 2) * 0.01f
             );
             card.transform.rotation = hand_spawn_point.rotation;
 
@@ -105,6 +106,7 @@ public class FieldManager : MonoBehaviour
         hand_cards.Remove(card_to_move);
         AddaptAllCardsPositions();
 
+        Debug.Log($"Placing card {id} on slot {slot_index}");
         GameObject card_on_board = Board[slot_index].transform.GetChild(0).GetChild(0).gameObject;
         if (card_on_board == null)
         {
@@ -139,13 +141,8 @@ public class FieldManager : MonoBehaviour
             else
             {
                 Board[i].GetComponent<Animator>().SetTrigger("Close");
-                #if UNITY_EDITOR
-                DestroyImmediate(card);
-                #else
-                Destroy(card);
-                #endif
+                textureManager.untexture_card(card);
             }
         }
     }
-
 }

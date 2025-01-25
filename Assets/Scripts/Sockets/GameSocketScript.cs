@@ -15,6 +15,7 @@ public class GameSocketScript : MonoBehaviour
     public PupitreScript PupitreScript;
     public TimerScript timerScript;
     public WinCondition WinConditionScript;
+    public HealthManagerScript HealthManager;
 
     public FieldManager FieldManagerPlayer;
     public FieldManager FieldManagerOponent;
@@ -86,16 +87,17 @@ public class GameSocketScript : MonoBehaviour
         }
         if (phase == "Resolve")
         {
-            Debug.Log($"Game Status: {game_status}");
-            Debug.Log($"Your Damage: {your_damage}");
-            Debug.Log($"Oponent Damage: {oponent_damage}");
+            DummyDisplay.CreateFloatingText("health", int.Parse(your_damage), true);
+            DummyDisplay.CreateFloatingText("health", int.Parse(oponent_damage), false);
+            HealthManager.change_health(1, int.Parse(your_damage));
+            HealthManager.change_health(2, int.Parse(oponent_damage));
+            WinConditionScript.test_victory(game_status);
         }
         if (phase == "Discard")
         {
             PupitreScript.TrashActionCard();
         }
 
-        WinConditionScript.test_victory(game_status);
         phase_ended = false;
     }
 

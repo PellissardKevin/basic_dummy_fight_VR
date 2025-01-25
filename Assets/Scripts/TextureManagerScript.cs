@@ -78,4 +78,25 @@ public class TextureManagerScript : MonoBehaviour
         faceRenderer.material = newMaterial;
         //Debug.Log($"Successfully instantiated prefab and applied image for ID: {id}");
     }
+
+    public void untexture_card(GameObject card)
+    {
+        // Find the child named "Face" and apply the texture to its material
+        Transform faceTransform = card.transform.Find("Face");
+        if (faceTransform == null)
+        {
+            Debug.LogError("Child named 'Face' not found in the instantiated prefab.");
+            return;
+        }
+
+        Renderer faceRenderer = faceTransform.GetComponent<Renderer>();
+        if (faceRenderer == null)
+        {
+            Debug.LogError("Renderer component not found on the 'Face' child object.");
+            return;
+        }
+        Material newMaterial = new Material(Shader.Find("Standard"));
+        newMaterial.mainTexture = null;
+        faceRenderer.material = newMaterial;
+    }
 }
