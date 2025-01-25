@@ -150,4 +150,12 @@ public class PupitreScript : MonoBehaviour
         }
     }
 
+    [ContextMenu("Trash Action Card")]
+    public void TrashActionCard()
+    {
+        if (board_cards[6] == null)
+            return;
+        MoveToTrash(board_cards[6]);
+        board_cards[6] = null;
+    }
 }

@@ -14,6 +14,8 @@ public class SymetrycalPair : MonoBehaviour
     [Tooltip("The center point for symmetry, default is the world origin (0, 0, 0).")]
     public Vector3 symmetryCenter = Vector3.zero;
 
+    public bool ActiveRotation = true;
+
 #if UNITY_EDITOR
     private void OnValidate()
     {
@@ -42,11 +44,19 @@ public class SymetrycalPair : MonoBehaviour
                 symmetryCenter.z - (transform.position.z - symmetryCenter.z)
             );
 
-            // Calculate mirrored rotation
-            Quaternion mirroredRotation = Quaternion.Euler(
-                transform.rotation.eulerAngles.x,
-                -transform.rotation.eulerAngles.y + 180f,
-                -transform.rotation.eulerAngles.z
+            Vector3 originalRotation = transform.rotation.eulerAngles;
+            float mirroredY = (originalRotation.y + 180f) % 360f;
+            // Ensure the angle is in the range [0, 360)
+            if (mirroredY < 0)
+                mirroredY += 360f;
+
+
+            Quaternion mirroredRotation; // Calculate mirrored rotation
+
+            mirroredRotation = Quaternion.Euler(
+                originalRotation.x,
+                mirroredY,
+                originalRotation.z
             );
 
             // Copy the scale
@@ -54,7 +64,8 @@ public class SymetrycalPair : MonoBehaviour
 
             // Update paired object
             pairedObject.position = mirroredPosition;
-            pairedObject.rotation = mirroredRotation;
+            if (ActiveRotation)
+                pairedObject.rotation = mirroredRotation;
             pairedObject.localScale = mirroredScale;
         }
     }

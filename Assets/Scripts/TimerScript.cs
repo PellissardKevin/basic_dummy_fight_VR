@@ -2,10 +2,11 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using TMPro;
 
 public class TimerScript : MonoBehaviour
 {
-    public Text timerText; // Assign the UI Text element in the Inspector
+    public TMP_Text timerText; // Assign the UI Text element in the Inspector
     public GameSocketScript gameSocketScript;
 
     private float currentTime;

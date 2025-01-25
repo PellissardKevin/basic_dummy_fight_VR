@@ -5,6 +5,7 @@ using UnityEngine.UI;
 using System.Globalization;
 using System.Text.RegularExpressions;
 using System;
+using TMPro;
 
 
 public class GameSocketScript : MonoBehaviour
@@ -18,7 +19,7 @@ public class GameSocketScript : MonoBehaviour
     public FieldManager FieldManagerPlayer;
     public FieldManager FieldManagerOponent;
 
-    public Text PhaseText;
+    public TMP_Text PhaseText;
     public GameObject opponent_player;
     public string current_phase = "Draw";
 
@@ -88,6 +89,10 @@ public class GameSocketScript : MonoBehaviour
             Debug.Log($"Game Status: {game_status}");
             Debug.Log($"Your Damage: {your_damage}");
             Debug.Log($"Oponent Damage: {oponent_damage}");
+        }
+        if (phase == "Discard")
+        {
+            PupitreScript.TrashActionCard();
         }
 
         WinConditionScript.test_victory(game_status);
