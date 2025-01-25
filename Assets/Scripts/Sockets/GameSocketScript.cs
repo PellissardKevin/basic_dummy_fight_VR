@@ -89,8 +89,8 @@ public class GameSocketScript : MonoBehaviour
         {
             DummyDisplay.CreateFloatingText("health", int.Parse(your_damage), true);
             DummyDisplay.CreateFloatingText("health", int.Parse(oponent_damage), false);
-            HealthManager.change_health(1, int.Parse(your_damage));
-            HealthManager.change_health(2, int.Parse(oponent_damage));
+            HealthManager.change_health(1, -int.Parse(your_damage));
+            HealthManager.change_health(2, -int.Parse(oponent_damage));
             WinConditionScript.test_victory(game_status);
         }
         if (phase == "Discard")

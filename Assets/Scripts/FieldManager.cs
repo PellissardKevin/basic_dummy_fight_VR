@@ -113,6 +113,7 @@ public class FieldManager : MonoBehaviour
             Debug.Log("Card not found on board");
         }
         textureManager.Texture_Card(card_on_board, id);
+        set_card_timer(3, card_on_board);
         Board[slot_index].GetComponent<Animator>().SetTrigger("Reveal");
 
         #if UNITY_EDITOR
@@ -140,9 +141,17 @@ public class FieldManager : MonoBehaviour
                 timerText.text = timer.ToString();
             else
             {
+                timerText.gameObject.SetActive(false);
                 Board[i].GetComponent<Animator>().SetTrigger("Close");
                 textureManager.untexture_card(card);
             }
         }
+    }
+
+    public void set_card_timer(int value, GameObject card)
+    {
+        TMP_Text timerText = card.transform.Find("TimerCanvas/TimerText").GetComponent<TMP_Text>();
+        timerText.gameObject.SetActive(true);
+        timerText.text = value.ToString();
     }
 }

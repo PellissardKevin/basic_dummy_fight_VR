@@ -79,6 +79,11 @@ public class PupitreScript : MonoBehaviour
         hand_cards.Remove(card_to_move);
         board_cards[slot_index] = card_to_move;
 
+        int timer = 3;
+        if (slot_index == 6)
+            timer = 1;
+        set_card_timer(timer, card_to_move);
+
         card_to_move.transform.position = board_spawn_point[slot_index].position;
         AddaptAllCardsPositions();
     }
@@ -144,6 +149,7 @@ public class PupitreScript : MonoBehaviour
                 timerText.text = timer.ToString();
             else
             {
+                timerText.gameObject.SetActive(false);
                 MoveToTrash(card);
                 board_cards[i] = null; // Nullify the reference in the list
             }
@@ -157,5 +163,14 @@ public class PupitreScript : MonoBehaviour
             return;
         MoveToTrash(board_cards[6]);
         board_cards[6] = null;
+    }
+
+
+    public void set_card_timer(int value, GameObject card)
+    {
+        TMP_Text timerText = card.transform.Find("TimerCanvas/TimerText").GetComponent<TMP_Text>();
+        timerText.gameObject.SetActive(true);
+        timerText.text = value.ToString();
+        Debug.Log($"Setting timer to {value}");
     }
 }

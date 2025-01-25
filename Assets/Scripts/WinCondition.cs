@@ -9,25 +9,27 @@ public class WinCondition : MonoBehaviour
     public GameObject DrawText;
     public GameObject MenuButton;
 
+    public TimerScript timer;
+
     public void test_victory(string game_status)
     {
         if (game_status == "you win")
         {
             Debug.Log("Victory");
             VictoryText.SetActive(true);
-            MenuButton.SetActive(true);
+            stop_game();
         }
         else if (game_status == "you lose")
         {
             Debug.Log("Defeat");
             DefeatText.SetActive(true);
-            MenuButton.SetActive(true);
+            stop_game();
         }
         else if (game_status == "Draw")
         {
             Debug.Log("Draw");
             DrawText.SetActive(true);
-            MenuButton.SetActive(true);
+            stop_game();
         }
     }
 
@@ -50,5 +52,11 @@ public class WinCondition : MonoBehaviour
     public void TestNone()
     {
         test_victory("None");
+    }
+
+    public void stop_game()
+    {
+        timer.enabled = false;
+        MenuButton.SetActive(true);
     }
 }
