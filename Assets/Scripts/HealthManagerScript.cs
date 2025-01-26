@@ -11,7 +11,6 @@ public class Health
 
     public string ToString()
     {
-        Debug.Log($"to string: {health} / {maxHealth} HP");
         return $"{health} / {maxHealth} HP";
     }
 }
@@ -76,7 +75,6 @@ public class HealthManagerScript : MonoBehaviour
     {
         int player = isPlayer1 ? 1 : 2;
         Health health = select_player(player);
-        Debug.Log($"Player health text {health.ToString()}");
         if (isPlayer1)
         {
             if (isVR)
@@ -112,8 +110,6 @@ public class HealthManagerScript : MonoBehaviour
     {
         Health selected = select_player(player);
         selected.health += value_change;
-        Debug.Log($"Player {player} health: {selected.health} max health: {selected.maxHealth}");
-        Debug.Log($"% {selected.health / selected.maxHealth * 100}");
         UpdateHealthBar(selected.health / selected.maxHealth * 100, player == 1);
     }
 

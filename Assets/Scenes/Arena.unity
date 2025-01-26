@@ -271,6 +271,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   deck_cards: []
   hand_cards: []
+  trash_cards: []
   Board:
   - {fileID: 417685498}
   - {fileID: 2035947459}
@@ -282,6 +283,7 @@ MonoBehaviour:
   isPlayer: 0
   deck_spawn_point: {fileID: 700384765}
   hand_spawn_point: {fileID: 1848667417}
+  trash_spawn_point: {fileID: 230160583}
   textureManager: {fileID: 1786755119}
 --- !u!1 &67148831 stripped
 GameObject:
@@ -1913,6 +1915,11 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 463499034}
   m_CullTransparentMesh: 1
+--- !u!1 &467874185 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 5387346938795771193, guid: 99473677536a9844ba1947086bc1ddff, type: 3}
+  m_PrefabInstance: {fileID: 1428247059}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &473323917
 GameObject:
   m_ObjectHideFlags: 0
@@ -4905,6 +4912,10 @@ PrefabInstance:
       propertyPath: m_IsActive
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 7504823140595853919, guid: 99473677536a9844ba1947086bc1ddff, type: 3}
+      propertyPath: CameraOffset
+      value: 
+      objectReference: {fileID: 467874185}
     - target: {fileID: 7706485308334657717, guid: 99473677536a9844ba1947086bc1ddff, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
@@ -7407,6 +7418,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   deck_cards: []
   hand_cards: []
+  trash_cards: []
   Board:
   - {fileID: 833276681}
   - {fileID: 458808993}
@@ -7418,6 +7430,7 @@ MonoBehaviour:
   isPlayer: 1
   deck_spawn_point: {fileID: 1221305073}
   hand_spawn_point: {fileID: 760820771}
+  trash_spawn_point: {fileID: 1577427739}
   textureManager: {fileID: 1786755119}
 --- !u!1 &2035947459 stripped
 GameObject:

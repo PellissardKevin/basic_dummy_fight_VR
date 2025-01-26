@@ -238,13 +238,17 @@ public class SocketClient : MonoBehaviour
         string game_status = "";
         string your_damage = "";
         string oponent_damage = "";
+        string discarded_cards = "";
+        int count_discarded = 0;
 
         if (phase == "Draw")
+        {
             my_cards = parse_response(data, "your_cards");
-        if (false)
-            oponent_cards = parse_response(data, "oponent_cards");
-
-        if (phase == "Reveal")
+            //oponent_cards = parse_response(data, "oponent_cards");
+            discarded_cards = parse_response(data, "discarded_cards");
+            count_discarded = int.Parse(parse_response(data, "count_discarded"));
+        }
+        else if (phase == "Reveal")
         {
             cards_to_reveal = parse_response(data, "cards_to_reveal");
             own_reveal = parse_response(data, "own_reveal");
@@ -257,7 +261,7 @@ public class SocketClient : MonoBehaviour
         }
 
         Debug.Log($"Next {my_cards}, {oponent_cards}, {phase}, {timer}");
-        functionQueue.Enqueue(() => { GameScript.next_phase(my_cards, oponent_cards, cards_to_reveal, own_reveal, phase, timer, game_status, your_damage, oponent_damage); });
+        functionQueue.Enqueue(() => { GameScript.next_phase(my_cards, oponent_cards, cards_to_reveal, own_reveal, phase, timer, game_status, your_damage, oponent_damage, discarded_cards, count_discarded); });
     }
 
     private void phase_validation_accepted(SocketIOClient.SocketIOResponse data)

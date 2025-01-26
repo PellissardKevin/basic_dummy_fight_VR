@@ -77,14 +77,22 @@ public class PupitreScript : MonoBehaviour
                 card_to_move = card;
 
         hand_cards.Remove(card_to_move);
-        board_cards[slot_index] = card_to_move;
+        if (slot_index == 7)
+        {
+            MoveToTrash(card_to_move);
+        }
+        else
+        {
+            board_cards[slot_index] = card_to_move;
 
-        int timer = 3;
-        if (slot_index == 6)
-            timer = 1;
-        set_card_timer(timer, card_to_move);
+            int timer = 3;
+            if (slot_index == 6)
+                timer = 1;
+            set_card_timer(timer, card_to_move);
+            card_to_move.transform.position = board_spawn_point[slot_index].position;
+        }
 
-        card_to_move.transform.position = board_spawn_point[slot_index].position;
+
         AddaptAllCardsPositions();
     }
 
@@ -121,6 +129,18 @@ public class PupitreScript : MonoBehaviour
         }
         else
             MoveToTrash(card);
+        AddaptAllCardsPositions();
+    }
+
+    public void Discard(string id)
+    {
+        GameObject card_to_discard = null;
+        foreach (GameObject card in hand_cards)
+            if (card != null && card.name.Substring(0, 3) == id)
+                card_to_discard = card;
+
+        hand_cards.Remove(card_to_discard);
+        MoveToTrash(card_to_discard);
         AddaptAllCardsPositions();
     }
 

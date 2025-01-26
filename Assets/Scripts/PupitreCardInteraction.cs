@@ -174,12 +174,17 @@ public class PupitreCardInteraction : MonoBehaviour
 
     private bool can_move_card(string card_id, int slot_index)
     {
-        if(!IsSlotAvailable(slot_index))
-            return false;
+        if (slot_index != 7)
+            if(!IsSlotAvailable(slot_index))
+                return false;
         string type = TypeManagerScript.GetType1FromID(card_id);
         string phase = gameSocketScript.current_phase;
         //Debug.Log($"can_move_card: {card_id} in slot {slot_index} on phase {phase} type {type}");
 
+        if (phase == "Discard" && slot_index == 7)
+            return true;
+        if (slot_index == 7)
+            return false;
         if (phase == "Action" && slot_index == 6 && type == "Action") //card action can only be played in the action slot an
             return true;
         if (phase != "Preparation" || slot_index == 6 ||type == "Action") //card action should work in condition before

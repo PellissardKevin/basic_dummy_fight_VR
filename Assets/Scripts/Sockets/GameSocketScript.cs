@@ -58,7 +58,7 @@ public class GameSocketScript : MonoBehaviour
             FieldManagerOponent.PlaceCardOnBoard(id, slot);
     }
 
-    public void next_phase(string my_cards, string oponent_cards, string cards_to_reveal, string own_reveal, string phase, string timer, string game_status, string your_damage, string oponent_damage)
+    public void next_phase(string my_cards, string oponent_cards, string cards_to_reveal, string own_reveal, string phase, string timer, string game_status, string your_damage, string oponent_damage, string discarded_cards, int count_discarded)
     {
         Debug.Log($"Next {my_cards}, {oponent_cards}, {phase}, {timer}");
         timerScript.ResetTimer(float.Parse(timer, CultureInfo.InvariantCulture));
@@ -73,19 +73,22 @@ public class GameSocketScript : MonoBehaviour
             TurnEffect.color = new Color(1, 0, 0);
 
         if (phase == "Draw")
+        {
             Pick_Cards(my_cards);
-        if (phase == "Reveal")
+            Discard(discarded_cards, count_discarded);
+        }
+        else if (phase == "Reveal")
         {
             RevealCards(cards_to_reveal, false);
             RevealCards(own_reveal, true);
         }
-        if (phase == "Action")
+        else if (phase == "Action")
         {
             PupitreScript.ReduceCardsTimer();
             FieldManagerPlayer.ReduceCardsTimer();
             FieldManagerOponent.ReduceCardsTimer();
         }
-        if (phase == "Resolve")
+        else if (phase == "Resolve")
         {
             DummyDisplay.CreateFloatingText("health", int.Parse(your_damage), true);
             DummyDisplay.CreateFloatingText("health", int.Parse(oponent_damage), false);
@@ -93,12 +96,27 @@ public class GameSocketScript : MonoBehaviour
             HealthManager.change_health(2, -int.Parse(oponent_damage));
             WinConditionScript.test_victory(game_status);
         }
-        if (phase == "Discard")
+        else if (phase == "Discard")
         {
             PupitreScript.TrashActionCard();
         }
 
         phase_ended = false;
+    }
+
+    public void Discard(string discarded_cards, int count_discarded)
+    {
+        var card_ids = Newtonsoft.Json.JsonConvert.DeserializeObject<List<string>>(discarded_cards);
+
+        foreach (string id in card_ids)
+        {
+            string padded_id = id.PadLeft(3, '0');
+            Debug.Log($"Discarding card: {id} {padded_id}");
+            PupitreScript.Discard(padded_id);
+            FieldManagerPlayer.Discard(padded_id);
+        }
+
+        Debug.Log($"Discarded {count_discarded} cards {discarded_cards}");
     }
 
     public void RevealCards(string cards_to_reveal, bool isPlayer)

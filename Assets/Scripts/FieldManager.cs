@@ -7,6 +7,7 @@ public class FieldManager : MonoBehaviour
 {
     [SerializeField] private List<GameObject> deck_cards = new List<GameObject>();
     [SerializeField] private List<GameObject> hand_cards = new List<GameObject>();
+    [SerializeField] private List<GameObject> trash_cards = new List<GameObject>();
 
     [SerializeField] private GameObject[] Board = new GameObject[6];
 
@@ -16,19 +17,20 @@ public class FieldManager : MonoBehaviour
 
     public Transform deck_spawn_point;
     public Transform hand_spawn_point;
+    public Transform trash_spawn_point;
 
     public TextureManagerScript textureManager;
 
     public void Spawn_Deck(int quantity)
     {
-        Vector3 thickness = new Vector3(0, 0, -0.002f) * deck_spawn_point.lossyScale.z; // Offset for stacking in local space
+        Vector3 thickness = new Vector3(0, 0, -0.02f) * deck_spawn_point.lossyScale.z; // Offset for stacking in local space
         Delete_Deck(deck_cards); // Clear the previous deck
 
         for (int i = 0; i < quantity; i++)
         {
             GameObject card = Instantiate(card_prefab, deck_spawn_point.position, deck_spawn_point.rotation);
             card.transform.SetParent(gameObject.transform);
-            Vector3 offset = deck_spawn_point.gameObject.transform.rotation * (thickness * i);
+            Vector3 offset = (thickness * i);
             card.transform.position = deck_spawn_point.position + offset;
             card.transform.Rotate(0, 180, 0, Space.Self);
             card.transform.localScale = card.transform.lossyScale * 3;
@@ -137,6 +139,9 @@ public class FieldManager : MonoBehaviour
             int timer = int.Parse(timerText.text);
             timer--;
 
+            if(isPlayer && i == 1)
+                Debug.Log($"Reducing timer for card {card.name} to {timer}");
+
             if (timer > 0)
                 timerText.text = timer.ToString();
             else
@@ -148,10 +153,41 @@ public class FieldManager : MonoBehaviour
         }
     }
 
+    public void Discard(string id)
+    {
+        GameObject card_to_discard = null;
+        foreach (GameObject card in hand_cards)
+            if (card != null && card.name.Substring(0, 3) == id)
+                card_to_discard = card;
+
+        hand_cards.Remove(card_to_discard);
+        //MoveToTrash(card_to_discard);
+        AddaptAllCardsPositions();
+    }
+
     public void set_card_timer(int value, GameObject card)
     {
         TMP_Text timerText = card.transform.Find("TimerCanvas/TimerText").GetComponent<TMP_Text>();
         timerText.gameObject.SetActive(true);
         timerText.text = value.ToString();
+    }
+
+    public void MoveToTrash(string id)
+    {
+        Vector3 thickness = new Vector3(0, 0, 0.02f) * trash_spawn_point.lossyScale.z; // Offset for stacking in local space
+
+        GameObject card = Instantiate(card_prefab, trash_spawn_point.position, trash_spawn_point.rotation);
+        card.transform.SetParent(gameObject.transform);
+        Vector3 offset = (thickness * trash_cards.Count);
+        card.transform.position = trash_spawn_point.position + offset;
+        card.transform.localScale = card.transform.lossyScale * 3;
+        trash_cards.Add(card);
+        textureManager.Texture_Card(card, id);
+    }
+
+    [ContextMenu("Trash test")]
+    public void Trashtest()
+    {
+        MoveToTrash("001");
     }
 }
