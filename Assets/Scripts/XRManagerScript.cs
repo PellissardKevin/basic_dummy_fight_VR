@@ -7,6 +7,7 @@ using UnityEngine.SpatialTracking;
 public class XRManagerScript : MonoBehaviour
 {
     public HealthManagerScript HealthManager;
+    public PlayerMovement playerMovement;
     public GameObject AddScene2Object;
 
     public GameObject XR_Rig;
@@ -57,5 +58,6 @@ public class XRManagerScript : MonoBehaviour
     public void activateXR()
     {
         HealthManager.isVR = true;
+        playerMovement.isVR = true;
     }
 }

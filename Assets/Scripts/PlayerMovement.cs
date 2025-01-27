@@ -13,6 +13,8 @@ public class PlayerMovement : MonoBehaviour
     private bool isGrounded;
     private float jumpForce = 5.0f;
 
+    public bool isVR = false;
+
     private CharacterController characterController;
     public GameObject CameraOffset;
 
@@ -49,10 +51,13 @@ public class PlayerMovement : MonoBehaviour
         {
             transform.rotation *= Quaternion.Euler(0, rotationY * rotationSpeed, 0);
 
-            CameraOffset.transform.rotation *= Quaternion.Euler(-rotationX * verticalSpeed, 0, 0);
-            Vector3 eulerAngles = CameraOffset.transform.rotation.eulerAngles;
-            eulerAngles.x = ClampAngle(eulerAngles.x, -45f, 45f);
-            CameraOffset.transform.rotation = Quaternion.Euler(eulerAngles);
+            if (!isVR)
+            {
+                CameraOffset.transform.rotation *= Quaternion.Euler(-rotationX * verticalSpeed, 0, 0);
+                Vector3 eulerAngles = CameraOffset.transform.rotation.eulerAngles;
+                eulerAngles.x = ClampAngle(eulerAngles.x, -45f, 45f);
+                CameraOffset.transform.rotation = Quaternion.Euler(eulerAngles);
+            }
         }
 
 
