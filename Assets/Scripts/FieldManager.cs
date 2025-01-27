@@ -161,7 +161,25 @@ public class FieldManager : MonoBehaviour
                 card_to_discard = card;
 
         hand_cards.Remove(card_to_discard);
-        //MoveToTrash(card_to_discard);
+        //delete card
+        #if UNITY_EDITOR
+        DestroyImmediate(card_to_discard);
+        #else
+        Destroy(card_to_discard);
+        #endif
+        AddaptAllCardsPositions();
+    }
+
+    public void ThrowFirstCard()
+    {
+        GameObject card_to_discard = hand_cards[0];
+        hand_cards.Remove(card_to_discard);
+        //delete card
+        #if UNITY_EDITOR
+        DestroyImmediate(card_to_discard);
+        #else
+        Destroy(card_to_discard);
+        #endif
         AddaptAllCardsPositions();
     }
 

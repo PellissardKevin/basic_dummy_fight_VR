@@ -122,6 +122,9 @@ public class GameSocketScript : MonoBehaviour
             FieldManagerPlayer.Discard(padded_id);
         }
 
+        for (int i = 0; i < count_discarded; i++)
+            FieldManagerOponent.ThrowFirstCard();
+
         Debug.Log($"Discarded {count_discarded} cards {discarded_cards}");
     }
 
@@ -145,6 +148,10 @@ public class GameSocketScript : MonoBehaviour
                 DummyDisplay.CreateFloatingText(type, value, target == "self");
             }
             Reveal_Card(card_id, card_slot, isPlayer);
+            if (isPlayer)
+                FieldManagerPlayer.Discard(card_id);
+            else
+                FieldManagerOponent.ThrowFirstCard();
             //Debug.Log($"Revealing card: {card_id} in slot {card_slot} with effects: {effects}");
         }
     }
