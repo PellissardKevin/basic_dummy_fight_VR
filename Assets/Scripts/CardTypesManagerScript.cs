@@ -49,4 +49,18 @@ public class CardTypesManagerScript : MonoBehaviour
         }
     }
 
+    public string GetType2FromID(string id)
+    {
+        int number = int.Parse(id);
+        id = $"{number:D3}"; // Format as a 3-digit number
+
+        if (idToType2Mapping.ContainsKey(id))
+            return idToType2Mapping[id];
+        else
+        {
+            Debug.LogWarning($"No type2 found for ID {id}");
+            return null;
+        }
+    }
+
 }

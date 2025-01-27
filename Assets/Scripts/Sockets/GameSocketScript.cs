@@ -16,6 +16,8 @@ public class GameSocketScript : MonoBehaviour
     public TimerScript timerScript;
     public WinCondition WinConditionScript;
     public HealthManagerScript HealthManager;
+    public DummyController DummyControllerPlayer;
+    public DummyController DummyControllerOponent;
 
     public FieldManager FieldManagerPlayer;
     public FieldManager FieldManagerOponent;
@@ -94,11 +96,15 @@ public class GameSocketScript : MonoBehaviour
             DummyDisplay.CreateFloatingText("health", int.Parse(oponent_damage), false);
             HealthManager.change_health(1, -int.Parse(your_damage));
             HealthManager.change_health(2, -int.Parse(oponent_damage));
+            DummyControllerPlayer.PlayAnimation();
+            DummyControllerOponent.PlayAnimation();
             WinConditionScript.test_victory(game_status);
+
         }
         else if (phase == "Discard")
         {
             PupitreScript.TrashActionCard();
+
         }
 
         phase_ended = false;

@@ -59,5 +59,7 @@ public class XRManagerScript : MonoBehaviour
     {
         HealthManager.isVR = true;
         playerMovement.isVR = true;
+        xrCamera.transform.position = new Vector3(0, 0, 0);
     }
+
 }

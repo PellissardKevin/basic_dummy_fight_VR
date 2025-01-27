@@ -41,4 +41,14 @@ public class DummyController : MonoBehaviour
         ChangeWeapon(1);
     }
 
+    [ContextMenu("play animation")]
+    public void PlayAnimation()
+    {
+        int action = Random.Range(0, 2);
+        if (action == 0)
+            Attack();
+        else
+            Block();
+    }
+
 }
