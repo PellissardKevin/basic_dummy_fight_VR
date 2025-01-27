@@ -19,7 +19,7 @@ public class WinCondition : MonoBehaviour
             VictoryText.SetActive(true);
             stop_game();
         }
-        else if (game_status == "you lose")
+        else if (game_status == "you loose")
         {
             Debug.Log("Defeat");
             DefeatText.SetActive(true);

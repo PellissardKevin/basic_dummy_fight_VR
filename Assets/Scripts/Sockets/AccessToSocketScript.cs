@@ -17,6 +17,10 @@ public class AccessToSocketScript : MonoBehaviour
     public Button noButton; // Button for "No" response
     public Button endButton; // Button for ending match
     public Text connexion;
+
+    public GameObject Spiral1;
+    public GameObject Spiral2;
+
     [SerializeField] private TMP_InputField NameField;
     [SerializeField] private TMP_InputField PasswordField;
 
@@ -54,11 +58,19 @@ public class AccessToSocketScript : MonoBehaviour
         noButton.gameObject.SetActive(false);
         endButton.gameObject.SetActive(false);
 
+        Spiral1.SetActive(false);
+        Spiral2.SetActive(false);
+
         // Show relevant UI elements based on state
         if (state == "verified")
             startQueueButton.gameObject.SetActive(true);
         if (state == "in_match")
             endButton.gameObject.SetActive(true);
+        if (state == "waiting")
+        {
+            Spiral1.SetActive(true);
+            Spiral2.SetActive(true);
+        }
     }
 
     public void server_recieved_match_response()
@@ -72,6 +84,9 @@ public class AccessToSocketScript : MonoBehaviour
         messageText.gameObject.SetActive(true);
         yesButton.gameObject.SetActive(true);
         noButton.gameObject.SetActive(true);
+
+        Spiral1.SetActive(false);
+        Spiral2.SetActive(false);
     }
     public void RespondToMatch(bool response)
     {
